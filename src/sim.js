@@ -1144,7 +1144,7 @@ function addMonster(s, type, tx, ty, cp) {
   const st = UT[type], x = tx * TILE + 16, y = ty * TILE + 16;
   const e = addEnt(s, { k: 'u', t: type, o: GAIA, x, y, px: x, py: y, r: st.r, hp: st.hp, maxhp: st.hp, st: 'idle', tgt: 0,
     path: null, pi: 0, pathT: 0, cd: 0, face: (tx + ty) % 2 ? 1 : -1, hx: x, hy: y, cp, ret: false, wt: 0, wx: null, wy: null, sn: 0, gar: 0, ms: 0, stuck: 0 });
-  s.camps[cp].m.push(e.id); return e;
+  if (s.camps[cp]) s.camps[cp].m.push(e.id); return e;
 }
 function nearCamp(s, x, y) {
   if (!s.camps) return false;

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Dört Diyar — Çağların Savaşı v1.3</title>
+<title>Dört Diyar — Çağların Savaşı v1.4</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -99,6 +99,7 @@ input,select{background:#120e09;border:1px solid var(--line);color:var(--txt);bo
 .res-t{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
 .res-t td,.res-t th{padding:5px;border-bottom:1px solid #3c2f1c;text-align:left}
 #rot{display:none}
+.langs .tb.on{border-color:var(--gold);color:var(--gold)}
 .ver{text-align:center;margin-top:14px;font-family:Cinzel,serif;letter-spacing:.15em;font-size:13px;color:var(--gold);opacity:.85}
 #chat{position:absolute;right:8px;top:44px;width:min(340px,94vw);max-height:calc(100vh - 210px);overflow-y:auto;background:#120d08f2;border:1px solid var(--line);border-radius:12px;padding:10px;z-index:9;display:none;box-shadow:0 8px 24px #000a;touch-action:pan-y}
 #chat.on{display:block}
@@ -203,9 +204,10 @@ input,select{background:#120e09;border:1px solid var(--line);color:var(--txt);bo
     <button class="big" data-go="saves">📂 Kayıtlı oyunlar</button>
     <button class="big" data-go="help">📜 Nasıl Oynanır</button>
     <div class="row" style="justify-content:center"><button class="tb btnSnd"></button><button class="tb btnMus"></button></div>
+    <div class="row langs" id="langPick" style="justify-content:center"></div>
   </div>
   <p class="hint" style="text-align:center;margin-top:26px">Bilgisayarda fare ve klavye, telefonda dokunmatik ile oynanır. Telefonda yatay tutman önerilir.</p>
-  <p class="ver">Sürüm 1.3</p>
+  <p class="ver">Sürüm 1.4</p>
 </div></div>
 
 <!-- SINGLE PLAYER SETUP -->
@@ -253,6 +255,7 @@ input,select{background:#120e09;border:1px solid var(--line);color:var(--txt);bo
 <!-- HELP -->
 <div id="help" class="scr"><div class="wrap help">
   <button class="back" data-go="menu">‹ Ana menü</button>
+  <div id="helpBody">
   <div class="card"><h2>Amaç</h2><p>Köylülerinle kaynak topla, şehrini büyüt, çağ atla ve ordunla rakiplerin tüm bina ve birimlerini yok et. Son ayakta kalan (ya da takım) kazanır.</p></div>
   <div class="card"><h2>Kaynaklar</h2><ul>
     <li>🍖 <b>Yemek</b>: çalılar (🫐) ve çiftlikler. Değirmen veya Şehir Merkezi’ne taşınır.</li>
@@ -287,6 +290,7 @@ input,select{background:#120e09;border:1px solid var(--line);color:var(--txt);bo
     <li><b>Telefon:</b> kendi biriminden parmağını sürükleyip ağaca, düşmana veya yere bırakırsan o komutu verir. Askerler seçiliyken kule/kaleye dokunmak onları içeri sokar. Tek parmakla kaydır, iki parmakla yakınlaştır. Birime dokun = seç; seçiliyken yere/ağaca/düşmana dokun = komut. ⬚ düğmesi veya basılı tutup sürükleme ile kutu seçimi. Çift dokunuş aynı türden hepsini seçer.</li></ul></div>
   <div class="card"><h2>Medeniyetler</h2><div id="helpCivs"></div></div>
   <div class="card"><h2>Emeği geçenler</h2><p>Karakter, bina, ağaç ve arazi grafikleri: <b>Tiny Swords</b> — Pixel Frog (pixelfrog-assets.itch.io). Kalkanlı Paralı ve Balçık: <b>Free Characters Animations</b> — OboroPixel. Gölge Okçu, Dağ Devi ve Orklar: <b>Tiny RPG Character Asset Pack</b> — Zerie. Atlılar, kuşatma araçları ve diğer çizimler oyuna özel hazırlandı.</p></div>
+  </div>
 </div></div>
 
 <!-- GAME -->

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Dört Diyar — Çağların Savaşı v1.3</title>
+<title>Dört Diyar — Çağların Savaşı v1.4</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -99,6 +99,7 @@ input,select{background:#120e09;border:1px solid var(--line);color:var(--txt);bo
 .res-t{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
 .res-t td,.res-t th{padding:5px;border-bottom:1px solid #3c2f1c;text-align:left}
 #rot{display:none}
+.langs .tb.on{border-color:var(--gold);color:var(--gold)}
 .ver{text-align:center;margin-top:14px;font-family:Cinzel,serif;letter-spacing:.15em;font-size:13px;color:var(--gold);opacity:.85}
 #chat{position:absolute;right:8px;top:44px;width:min(340px,94vw);max-height:calc(100vh - 210px);overflow-y:auto;background:#120d08f2;border:1px solid var(--line);border-radius:12px;padding:10px;z-index:9;display:none;box-shadow:0 8px 24px #000a;touch-action:pan-y}
 #chat.on{display:block}
@@ -203,9 +204,10 @@ input,select{background:#120e09;border:1px solid var(--line);color:var(--txt);bo
     <button class="big" data-go="saves">📂 Kayıtlı oyunlar</button>
     <button class="big" data-go="help">📜 Nasıl Oynanır</button>
     <div class="row" style="justify-content:center"><button class="tb btnSnd"></button><button class="tb btnMus"></button></div>
+    <div class="row langs" id="langPick" style="justify-content:center"></div>
   </div>
   <p class="hint" style="text-align:center;margin-top:26px">Bilgisayarda fare ve klavye, telefonda dokunmatik ile oynanır. Telefonda yatay tutman önerilir.</p>
-  <p class="ver">Sürüm 1.3</p>
+  <p class="ver">Sürüm 1.4</p>
 </div></div>
 
 <!-- SINGLE PLAYER SETUP -->
@@ -253,6 +255,7 @@ input,select{background:#120e09;border:1px solid var(--line);color:var(--txt);bo
 <!-- HELP -->
 <div id="help" class="scr"><div class="wrap help">
   <button class="back" data-go="menu">‹ Ana menü</button>
+  <div id="helpBody">
   <div class="card"><h2>Amaç</h2><p>Köylülerinle kaynak topla, şehrini büyüt, çağ atla ve ordunla rakiplerin tüm bina ve birimlerini yok et. Son ayakta kalan (ya da takım) kazanır.</p></div>
   <div class="card"><h2>Kaynaklar</h2><ul>
     <li>🍖 <b>Yemek</b>: çalılar (🫐) ve çiftlikler. Değirmen veya Şehir Merkezi’ne taşınır.</li>
@@ -287,6 +290,7 @@ input,select{background:#120e09;border:1px solid var(--line);color:var(--txt);bo
     <li><b>Telefon:</b> kendi biriminden parmağını sürükleyip ağaca, düşmana veya yere bırakırsan o komutu verir. Askerler seçiliyken kule/kaleye dokunmak onları içeri sokar. Tek parmakla kaydır, iki parmakla yakınlaştır. Birime dokun = seç; seçiliyken yere/ağaca/düşmana dokun = komut. ⬚ düğmesi veya basılı tutup sürükleme ile kutu seçimi. Çift dokunuş aynı türden hepsini seçer.</li></ul></div>
   <div class="card"><h2>Medeniyetler</h2><div id="helpCivs"></div></div>
   <div class="card"><h2>Emeği geçenler</h2><p>Karakter, bina, ağaç ve arazi grafikleri: <b>Tiny Swords</b> — Pixel Frog (pixelfrog-assets.itch.io). Kalkanlı Paralı ve Balçık: <b>Free Characters Animations</b> — OboroPixel. Gölge Okçu, Dağ Devi ve Orklar: <b>Tiny RPG Character Asset Pack</b> — Zerie. Atlılar, kuşatma araçları ve diğer çizimler oyuna özel hazırlandı.</p></div>
+  </div>
 </div></div>
 
 <!-- GAME -->
@@ -1490,7 +1494,7 @@ function addMonster(s, type, tx, ty, cp) {
   const st = UT[type], x = tx * TILE + 16, y = ty * TILE + 16;
   const e = addEnt(s, { k: 'u', t: type, o: GAIA, x, y, px: x, py: y, r: st.r, hp: st.hp, maxhp: st.hp, st: 'idle', tgt: 0,
     path: null, pi: 0, pathT: 0, cd: 0, face: (tx + ty) % 2 ? 1 : -1, hx: x, hy: y, cp, ret: false, wt: 0, wx: null, wy: null, sn: 0, gar: 0, ms: 0, stuck: 0 });
-  s.camps[cp].m.push(e.id); return e;
+  if (s.camps[cp]) s.camps[cp].m.push(e.id); return e;
 }
 function nearCamp(s, x, y) {
   if (!s.camps) return false;
@@ -2004,6 +2008,477 @@ const P2P = (() => {
   return { lobby, loadLib, TOKEN };
 })();
 
+// English translation (source language: Turkish)
+self.LANG_EN = {
+  units: { koylu: 'Villager', kilicli: 'Swordsman', mizrakci: 'Spearman', okcu: 'Archer', atli: 'Light Cavalry', zirhli: 'Knight', koc: 'Battering Ram', mancinik: 'Mangonel', kurtatli: 'Wolf Rider', kalkanli: 'Shield Mercenary', dagdevi: 'Mountain Giant', ork: 'Orc Warrior', orkreis: 'Orc Chief', balcik: 'Slime', devbalcik: 'Giant Slime', golgeokcu: 'Shadow Archer' },
+  blds: { tc: 'Town Center', ev: 'House', degirmen: 'Mill', depo: 'Storehouse', ciftlik: 'Farm', palisat: 'Palisade', kapi: 'Gate', kisla: 'Barracks', menzil: 'Archery Range', ahir: 'Stable', demirci: 'Blacksmith', atolye: 'Siege Workshop', kule: 'Watch Tower', sur: 'Stone Wall', kale: 'Castle' },
+  techs: {
+    cag2: ['Castle Age', 'New buildings and units. Requires 2 of: Storehouse, Mill, Barracks.'],
+    cag3: ['Imperial Age', 'Castle, unique unit, mangonel. Requires 2 of: Archery Range, Stable, Workshop, Blacksmith.'],
+    elarabasi: ['Wheelbarrow', 'Villagers 10% faster, carry 14 resources (instead of 10)'],
+    saban: ['Horse Collar', 'Farm yield +15%'], sulama: ['Irrigation', 'Farm yield +15%'],
+    balta: ['Double-Bit Axe', 'Wood gathering +20%'], testere: ['Bow Saw', 'Wood gathering +20%'],
+    madenci: ['Mining', 'Gold and stone +15%'], madenci2: ['Deep Mining', 'Gold and stone +15%'],
+    tatbikat: ['Drill', 'Infantry 15% faster'], hizli: ['Rapid Fire', 'Archers shoot 15% faster'], atcilik: ['Husbandry', 'Cavalry +20 HP'],
+    demir: ['Forging', 'Infantry and cavalry attack +1'], celik: ['Steel Forging', 'Infantry and cavalry attack +2'],
+    sivriuc: ['Fletching', 'Archers, towers, castles: attack +1, range +1'], delici: ['Bodkin Arrow', 'Archers, towers, castles: attack +1, range +1'],
+    pulzirh: ['Scale Armor', 'Infantry armor +1/+1'], zincir: ['Chain Mail', 'Infantry armor +1/+2'], deri: ['Leather Armor', 'Archer armor +1/+1'], atzirh: ['Horse Barding', 'Cavalry armor +1/+1'],
+    oz_bozkir: ['Wolf Pack', 'Steppe special: all cavalry attack +2'], oz_liman: ['Mercenary Armies', 'Harbor special: Shield Mercenary +25 HP, gold +15%'],
+    oz_dag: ['Granite Walls', 'Mountain special: walls, gates, towers and castles 40% sturdier'], oz_orman: ['Shadow Arrow', 'Forest special: archers +1 range, +2 sight'],
+  },
+  civs: {
+    bozkir: ['Steppe Khanate', 'Khagan Aybars', 'Cavalry 15% faster and 15% cheaper. Unique unit: Wolf Rider (mounted archer).'],
+    liman: ['Crimson Harbor Republic', 'Duke Valeran', 'Gold gathered 20% faster, starts with +100 gold. Unique unit: Shield Mercenary (very resistant to arrows).'],
+    dag: ['Stone Mountain Kingdom', 'Queen Senna', 'Buildings 25% sturdier, stone 20% faster, towers +1 range. Unique unit: Mountain Giant (wrecks buildings).'],
+    orman: ['Green Forest League', 'Sage Oren', 'Wood gathered 20% faster, archers +1 range. Unique unit: Shadow Archer (very long range).'],
+  },
+  res: { f: 'Food', w: 'Wood', g: 'Gold', s: 'Stone' },
+  rname: { f: 'food', w: 'wood', g: 'gold', s: 'stone' },
+  quick: { atk: '⚔️ Let’s attack!', help: '🆘 Help me!', def: '🛡️ Go on the defense!', res: '💰 I need resources!', ok: '👍 OK', no: '👎 No', gg: '🤝 Good game' },
+  camp: { ork: 'Orc camp', balcik: 'Slime pool' },
+  colors: ['Blue', 'Red', 'Purple', 'Yellow'],
+  ages: ['', 'Village Age', 'Castle Age', 'Imperial Age'],
+  s: {
+    'Dört Diyar — Çağların Savaşı v1.4': 'Four Realms — War of the Ages v1.4',
+    'DÖRT DİYAR': 'FOUR REALMS', 'ÇAĞLARIN SAVAŞI': 'WAR OF THE AGES',
+    '⚔️ Tek Oyunculu': '⚔️ Single Player', '🌐 Çok Oyunculu (4 kişiye kadar)': '🌐 Multiplayer (up to 4 players)',
+    '🎓 Eğitim (ilk oyunun için)': '🎓 Tutorial (for your first game)', '📂 Kayıtlı oyunlar': '📂 Saved games', '📜 Nasıl Oynanır': '📜 How to Play',
+    'Bilgisayarda fare ve klavye, telefonda dokunmatik ile oynanır. Telefonda yatay tutman önerilir.': 'Play with mouse and keyboard on a computer, or touch on a phone. Landscape is recommended on phones.',
+    'Sürüm 1.4': 'Version 1.4', '‹ Ana menü': '‹ Main menu', 'Medeniyetini seç': 'Choose your civilization', 'Rakipler': 'Opponents', 'İsmin': 'Your name',
+    'Harita': 'Map', '🌾 Ova (göller)': '🌾 Plains (lakes)', '🌊 Nehir (geçitli)': '🌊 River (with fords)', '⛰️ Yayla (tepeler)': '⛰️ Highlands (hills)',
+    'Boyut': 'Size', 'Küçük': 'Small', 'Orta': 'Medium', 'Büyük': 'Large', 'Kaynak': 'Resources', 'Normal': 'Normal', 'Bol': 'Rich', 'Nüfus': 'Population',
+    'Canavar': 'Monsters', 'Yok': 'None', 'Az': 'Few', 'Çok': 'Many', 'Düşük': 'Low', 'Yüksek': 'High',
+    '+ Rakip ekle': '+ Add opponent', 'Takımlı (sen + 2. oyuncu müttefik)': 'Teams (you + 2nd player allied)', 'Savaşı Başlat': 'Start the Battle',
+    'Çok oyunculu şu an kullanılamıyor': 'Multiplayer is not available right now',
+    'Çok oyunculu mod, oyunu claude.ai üzerinde açtığında çalışır. Arkadaşlarının katılması için bu sayfayı onlarla paylaşman (davet etmen) gerekir; herkes sayfayı aynı anda açık tutar. Bu arada tek oyunculu modda yapay zekaya karşı oynayabilirsin.': 'Multiplayer needs a connection between players. Meanwhile you can play single player against the AI.',
+    'Oyuncu': 'Player', 'Açık oyunlar': 'Open games', 'Aranıyor…': 'Searching…', 'Oda kodu': 'Room code', 'Katıl': 'Join', '🏰 Yeni oyun kur': '🏰 Host a new game',
+    'Arkadaşların bu sayfayı açınca oyunun burada listelenir ya da oda kodunla katılırlar. Sayfayı onlarla claude.ai’den paylaşman gerekir.': 'When your friends open this page your game is listed here, or they join with the room code.',
+    'Oda': 'Room', 'Takımlı oyun (takım seçimi açılır)': 'Team game (enables team choice)', 'Medeniyetin': 'Your civilization', 'Odadan çık': 'Leave room', 'Yükleniyor…': 'Loading…',
+    'Hızlı inşa (B)': 'Quick build (B)', 'Boştaki köylü (.)': 'Idle villager (.)', 'Tüm ordu': 'Whole army', 'Şehir merkezi (H)': 'Town center (H)', 'Kutu seçimi': 'Box select',
+    '💬 Sohbet': '💬 Chat', 'Sadece takım': 'Team only', 'Mesaj yaz…': 'Type a message…', 'Gönder': 'Send', 'Kapat': 'Close', 'Atla ›': 'Skip ›', 'Devam ›': 'Next ›',
+    'Menü': 'Menu', 'Devam et': 'Resume', '💾 Oyunu kaydet': '💾 Save game', '🏳️ Teslim ol': '🏳️ Resign', 'Ana menüye dön': 'Back to main menu', '💾 Kaydet': '💾 Save',
+    'Geri': 'Back', 'İzlemeye devam': 'Keep watching', 'Ana menü': 'Main menu', 'Sen': 'You', '🤖 Yapay zeka': '🤖 AI', '🎲 Rastgele': '🎲 Random', 'Kolay': 'Easy', 'Zor': 'Hard',
+    'Komutan': 'Commander', 'Oyun kurunca çıkan 4 harfli kodu arkadaşlarına gönder. Onlar bu sitenin aynı adresini açıp kodu yazarak katılır. İnternet bağlantısı gerekir.': 'Host a game and send the 4-letter code to your friends. They open this same site and type the code to join. Needs an internet connection.',
+    'Bağlanıyor…': 'Connecting…', 'Oyun kur ve 4 harfli oda kodunu arkadaşlarına gönder; onlar kodu yazıp katılsın.': 'Host a game and send the 4-letter room code to your friends; they type the code to join.',
+    'Şu an açık oyun yok. Yeni bir oyun kur ya da kodla katıl.': 'No open games right now. Host a new game or join with a code.',
+    'Bağlantı kurulamadı, tekrar dene.': 'Could not connect, try again.', 'Bu kodla açık oyun bulunamadı. Kodu kontrol et.': 'No open game with this code. Check the code.',
+    'Bu oda kodu kullanımda, tekrar dene.': 'This room code is in use, try again.', 'Bağlantı kütüphanesi yüklenemedi (internet bağlantını kontrol et).': 'Could not load the connection library (check your internet connection).',
+    'Odaya girilemedi.': 'Could not enter the room.', 'Bağlantı koptu': 'Connection lost', 'Oda kurucusu bekleniyor…': 'Waiting for the host…',
+    'Açık — oyuncu bekleniyor': 'Open — waiting for a player', 'Kapalı': 'Closed', 'Aç': 'Open', '+ YZ': '+ AI',
+    'Başlamak için en az 2 oyuncu (insan veya yapay zeka) gerekli.': 'At least 2 players (human or AI) are needed to start.', 'Hazır olduğunda başlat.': 'Start when ready.',
+    'Kurucunun başlatması bekleniyor…': 'Waiting for the host to start…', 'Oyun sensiz başladı.': 'The game started without you.',
+    '🔊 Ses açık': '🔊 Sound on', '🔇 Ses kapalı': '🔇 Sound off', '🎵 Müzik açık': '🎵 Music on', '🎵 Müzik kapalı': '🎵 Music off',
+    'Bağlantın koptu, diğer oyuncular devam ediyor.': 'You lost connection, the other players continue.', 'Uyarı: oyuncular arasında senkron farkı oluştu.': 'Warning: the players’ games went out of sync.',
+    '🏆 Zafer!': '🏆 Victory!', 'Oyun bitti': 'Game over', '💀 Yenildin': '💀 You were defeated', 'Öldürdü': 'Kills', 'Kaybetti': 'Losses', 'Topladı': 'Gathered',
+    'Grafik: Otomatik': 'Graphics: Auto', 'Grafik: Yüksek': 'Graphics: High', 'Grafik: Düşük': 'Graphics: Low',
+    'Tehlikeli! Birkaç köylüyle avla.': 'Dangerous! Hunt it with several villagers.', 'Köylüyle kes, sonra eti topla.': 'Slaughter it with a villager, then gather the meat.',
+    'Ağaç': 'Tree', 'Altın madeni': 'Gold mine', 'Taş ocağı': 'Stone quarry', 'Meyve çalısı': 'Berry bush', 'Koyun': 'Sheep', 'Yaban domuzu': 'Wild boar',
+    'Boşta': 'Idle', 'Topluyor': 'Gathering', 'İnşa ediyor': 'Building', 'Yürüyor': 'Walking', 'Taşıyor': 'Carrying', 'Saldırıyor': 'Attacking',
+    'Saldırgan': 'Aggressive', 'Savunma': 'Defensive', 'Yerinde': 'Stand ground', 'İptal': 'Cancel', 'Nüfus dolu — ev inşa et!': 'Population full — build a house!',
+    '👥 Tümü': '👥 All', 'Tümü': 'All', '🐾 Vahşi': '🐾 Wild',
+    'Askeri ›': 'Military ›', 'Askeri binalar': 'Military buildings', '‹ Ekonomi': '‹ Economy', 'Ekonomik binalar': 'Economic buildings',
+    'Görüş alanındaki düşmanı kovalar': 'Chases enemies in sight', 'Saldırır ama yerinden fazla uzaklaşmaz': 'Attacks but doesn’t stray far', 'Hiç hareket etmez, sadece menzildekine saldırır': 'Never moves, only attacks what is in range',
+    'Gir': 'Enter', 'Garnizon': 'Garrison', 'En yakın Şehir Merkezi, kule veya kaleye girer. İçerideki her birim bina oklarını güçlendirir ve iyileşir.': 'Enters the nearest Town Center, tower or castle. Every unit inside strengthens the building’s arrows and heals.',
+    'Dur': 'Stop', 'Sil': 'Delete', 'Seçili birimleri sil (iki kez bas)': 'Delete selected units (press twice)',
+    'Alarmı bitir': 'End alarm', 'Saklanan köylüler işlerine döner': 'Hidden villagers go back to work', 'Alarm': 'Alarm', 'Kasaba alarmı': 'Town bell',
+    'Yakındaki tüm köylüler en yakın Şehir Merkezi, kule veya kaleye saklanır': 'All nearby villagers hide in the nearest Town Center, tower or castle',
+    'İçerideki birimleri dışarı çıkar': 'Let the units inside out', 'Toplanma': 'Rally', 'Toplanma noktası: sonra haritaya dokun': 'Rally point: then tap the map', 'Toplanma noktası: sonra haritaya tıkla (veya sağ tık)': 'Rally point: then click the map (or right-click)',
+    'Yık': 'Demolish', 'Binayı yık (iki kez bas)': 'Demolish the building (press twice)', 'Girilecek bina yok (Şehir Merkezi, kule veya kale)': 'No building to enter (Town Center, tower or castle)',
+    '+5 nüfus': '+5 population', 'Sonsuz yemek kaynağı (1 köylü)': 'Endless food source (1 villager)', 'Yemek bırakma noktası; çiftlik teknolojileri': 'Food drop-off; farm technologies',
+    'Odun, altın, taş bırakma noktası; teknolojiler': 'Wood, gold, stone drop-off; technologies', 'Köylü üretir, çağ atlatır, ok atar, +5 nüfus, 10 kişilik garnizon': 'Trains villagers, advances ages, shoots arrows, +5 population, garrison of 10',
+    'Kılıçlı ve mızrakçı': 'Swordsmen and spearmen', 'Okçu': 'Archer', 'Atlı birimler': 'Cavalry', 'Koçbaşı ve mancınık': 'Rams and mangonels', 'Saldırı ve zırh geliştirmeleri': 'Attack and armor upgrades',
+    'Yakındaki düşmanlara ok atar, 5 kişilik garnizon': 'Shoots at nearby enemies, garrison of 5', 'Özel birim ve özel teknoloji, güçlü savunma, 20 kişilik garnizon': 'Unique unit and unique tech, strong defense, garrison of 20',
+    'Ucuz ahşap duvar. Başlangıç ve bitiş noktasına dokun, sonra ✓.': 'Cheap wooden wall. Tap the start and end points, then ✓.', 'Ucuz ahşap duvar. Başlangıca tıkla, bitişe tıkla.': 'Cheap wooden wall. Click the start, click the end.',
+    'Sağlam taş duvar. Başlangıç ve bitiş noktasına dokun, sonra ✓.': 'Sturdy stone wall. Tap the start and end points, then ✓.', 'Sağlam taş duvar. Başlangıca tıkla, bitişe tıkla.': 'Sturdy stone wall. Click the start, click the end.',
+    'Senin ve müttefiklerinin birimleri geçer, düşman geçemez': 'Your and your allies’ units pass, enemies can’t', 'Sadece binalara saldırır': 'Attacks buildings only',
+    'Silmek için tekrar bas': 'Press again to delete', 'Üretim sırası dolu': 'Production queue is full', 'Zaten araştırılıyor': 'Already being researched',
+    'Önce 2 bina gerekli: Depo, Değirmen veya Kışla': 'First you need 2 buildings: Storehouse, Mill or Barracks', 'Önce 2 bina gerekli: Menzil, Ahır veya Atölye': 'First you need 2 buildings: Archery Range, Stable or Workshop',
+    'Yetersiz kaynak': 'Not enough resources', 'Duvarın başlangıcına, sonra bitişine dokun ve ✓ bas': 'Tap the start of the wall, then its end, and press ✓', 'Duvarın başlangıcına tıkla, sonra bitişine tıkla': 'Click the start of the wall, then its end',
+    'Buraya duvar yapılamaz': 'Can’t build a wall here', 'Buraya inşa edilemez': 'Can’t build here', 'Boşta köylü yok': 'No idle villagers', 'Ordun yok': 'You have no army',
+    'Hoş geldin, komutan!': 'Welcome, commander!',
+    'Bu kısa eğitim ilk adımları gösterir. Önce haritada gezin: tek parmakla kaydır, iki parmakla yakınlaştır. Hazır olunca “Devam”a bas.': 'This short tutorial shows the first steps. First look around the map: drag with one finger, pinch with two to zoom. Press “Next” when ready.',
+    'Bu kısa eğitim ilk adımları gösterir. Önce haritada gezin: ok tuşları veya fareyi ekran kenarına götürerek kaydır, tekerlekle yakınlaştır. Hazır olunca “Devam”a bas.': 'This short tutorial shows the first steps. First look around the map: scroll with the arrow keys or by moving the mouse to the screen edge, zoom with the wheel. Press “Next” when ready.',
+    'Köylü seç': 'Select a villager', 'Hasır şapkalı bir köylüye dokun.': 'Tap a villager with a straw hat.', 'Hasır şapkalı bir köylüye sol tıkla.': 'Left-click a villager with a straw hat.',
+    'Odun topla': 'Gather wood', 'Köylü seçiliyken bir ağaca dokun. Köylü odunu kesip Şehir Merkezi’ne taşır.': 'With the villager selected, tap a tree. The villager chops wood and carries it to the Town Center.',
+    'Köylü seçiliyken bir ağaca sağ tıkla. Köylü odunu kesip Şehir Merkezi’ne taşır.': 'With the villager selected, right-click a tree. The villager chops wood and carries it to the Town Center.',
+    'Yemek topla': 'Gather food', 'Başka bir köylüyü seç ve kırmızı meyveli çalılara gönder.': 'Select another villager and send it to the red berry bushes.',
+    'Köylü üret': 'Train villagers', 'Soldaki 🏛️ düğmesiyle Şehir Merkezi’ni seç, sonra 👷 düğmesine bas. 6 köylüye ulaş. Yeni köylüleri de işe gönder!': 'Select the Town Center with the 🏛️ button on the left, then press 👷. Reach 6 villagers. Put the new villagers to work too!',
+    'Ev inşa et': 'Build a house', 'Bir köylü seç, 🏠 Ev düğmesine bas ve haritaya yerleştir (dokun, sonra ✓). Her ev nüfus sınırını 5 artırır.': 'Select a villager, press the 🏠 House button and place it on the map (tap, then ✓). Each house raises the population limit by 5.',
+    'Bir köylü seç, 🏠 Ev düğmesine bas ve haritaya yerleştir. Her ev nüfus sınırını 5 artırır.': 'Select a villager, press the 🏠 House button and place it on the map. Each house raises the population limit by 5.',
+    'Değirmen kur': 'Build a mill', 'Meyve çalılarının yanına 🌾 Değirmen kur. Köylüler yemeği daha kısa yoldan taşır.': 'Build a 🌾 Mill next to the berry bushes. Villagers carry food a shorter way.',
+    'Kışla inşa et': 'Build barracks', 'Köylü seç → “Askeri ›” sayfası → ⚔️ Kışla.': 'Select a villager → “Military ›” page → ⚔️ Barracks.',
+    'Asker üret': 'Train soldiers', 'Kışlayı seç ve 4 asker üret. 🔱 Mızrakçı atlılara karşı iyidir, 🗡️ Kılıçlı her işe yarar.': 'Select the barracks and train 4 soldiers. 🔱 Spearmen are good against cavalry, 🗡️ Swordsmen are all-rounders.',
+    'Davranış seç': 'Choose a stance', 'Soldaki ⚔️ düğmesiyle ordunu seç ve 🛡️ Savunma davranışına geçir. Böyle askerler düşmanı uzağa kovalamaz.': 'Select your army with the ⚔️ button on the left and switch to 🛡️ Defensive stance. Then soldiers don’t chase enemies far away.',
+    'Kale Çağı’na geç': 'Advance to the Castle Age', 'Bir 📦 Depo kur (Değirmen + Depo = 2 bina), sonra Şehir Merkezi’nden 🏯 Kale Çağı’nı araştır. Sana 300 yemek hediye ettim!': 'Build a 📦 Storehouse (Mill + Storehouse = 2 buildings), then research 🏯 Castle Age at the Town Center. Here are 300 food as a gift!',
+    'Kendini koru': 'Protect yourself', 'Köylü seç ve 🪵 Palisat ile üssünün önüne bir duvar çek. Araya bir 🚪 Kapı koy: senin birimlerin geçer, düşman geçemez.': 'Select a villager and build a 🪵 Palisade in front of your base. Put a 🚪 Gate in it: your units pass, enemies can’t.',
+    'Düşmanı yen!': 'Defeat the enemy!', 'Ordunu büyüt (🪵 Koçbaşı binaları hızla yıkar), ⚔️ ile tümünü seç ve düşmanın Şehir Merkezi’ne saldır. Düşman haritanın karşı köşesinde. Saldırı gelirse 🔔 Alarm ile köylülerini sakla.': 'Grow your army (🪵 Battering Rams wreck buildings fast), select all with ⚔️ and attack the enemy Town Center. The enemy is in the opposite corner of the map. If you are attacked, hide your villagers with the 🔔 Alarm.',
+    '🎓 Eğitim tamamlandı! Artık hazırsın.': '🎓 Tutorial complete! You’re ready now.', 'Köylün yok': 'You have no villagers', 'Önce birim seç': 'Select units first',
+    'Görünüm: Çapraz (izometrik)': 'View: Diagonal (isometric)', 'Görünüm: Üstten': 'View: Top-down', '📍 İşaretle': '📍 Ping', 'Haritada bir yere dokun': 'Tap a spot on the map', 'Haritada bir yere tıkla': 'Click a spot on the map',
+    '🤝 Müttefike kaynak gönder': '🤝 Send resources to an ally', 'Otomatik kayıt': 'Autosave', '💾 Otomatik kayıt': '💾 Autosave',
+    'Kayıtların claude.ai hesabına bağlı: başka cihazdan bu sayfayı açarak da devam edebilirsin.': 'Your saves are linked to your claude.ai account: you can continue by opening this page on another device.',
+    'Kayıtlar bu tarayıcıda tutulur.': 'Saves are kept in this browser.', 'Hesap bağlantısı kontrol ediliyor…': 'Checking account connection…',
+    'Henüz kayıtlı oyun yok. Tek oyunculu bir oyunda menüden “Oyunu kaydet”e bas; oyun ayrıca 3 dakikada bir kendiliğinden kaydedilir.': 'No saved games yet. In a single-player game press “Save game” in the menu; the game also saves itself every 3 minutes.',
+    'Hesaptaki kayıtlara şu an ulaşılamadı; bu cihazdaki kayıtlar gösteriliyor.': 'Account saves can’t be reached right now; showing the saves on this device.',
+    '▶ Devam': '▶ Continue', 'Emin misin?': 'Are you sure?', 'Bu kayıt açılamadı.': 'This save could not be opened.', 'Kaydediliyor…': 'Saving…',
+    '✓ Kaydedildi (bu cihaz + hesabın)': '✓ Saved (this device + your account)', '✓ Bu cihaza kaydedildi': '✓ Saved on this device', 'Kaydedilemedi.': 'Could not save.',
+    'Saldırı altındasınız!': 'You are under attack!', 'Yaban domuzu saldırıyor!': 'A wild boar is attacking!', '🛡️ Yardıma geliyorum!': '🛡️ I’m coming to help!',
+    '⚔️ Ordum hazırlanıyor, saldırıyoruz!': '⚔️ My army is getting ready, we attack!', '😕 Şu an ayıracak kaynağım yok.': '😕 I have no resources to spare right now.',
+    '💰 Hazine!': '💰 Treasure!', 'Birime dokunarak seç': 'Tap a unit to select it', 'Seçmek için tıkla veya sürükle': 'Click or drag to select', 'Boş': 'Empty', 'Ova': 'Plains', 'Nehir': 'River', 'Yayla': 'Highlands', 'Hız: 1x': 'Speed: 1x',
+  },
+  p: [
+    [/^Lider: (.+)$/, 'Leader: $1'],
+    [/^(\d+) birim seçili$/, '$1 units selected'],
+    [/^Can (\d+) · Saldırı (\d+)( · Menzil (\d+))? · Zırh (\S+)$/, (m, hp, at, r, rng, ar) => `HP ${hp} · Attack ${at}${r ? ' · Range ' + rng : ''} · Armor ${ar}`],
+    [/^Bonus: (.+)$/, (m, b) => 'Bonus: ' + b.replace(/atlılara/g, 'vs cavalry').replace(/okçulara/g, 'vs archers').replace(/piyadeye/g, 'vs infantry').replace(/binalara/g, 'vs buildings').replace(/kuşatmaya/g, 'vs siege')],
+    [/^Taşıyor: (.+)$/, 'Carrying: $1'],
+    [/^İnşaat: %(\d+)$/, 'Construction: $1%'],
+    [/^🛡 Garnizon (.+)$/, '🛡 Garrison $1'],
+    [/^— (.+) \(her parça\)$/, '— $1 (per piece)'],
+    [/^(.+) — (\S+) renktesin\. Kaynak toplamaya başla!$/, (m, a, c) => `${a} — you are ${T(c)}. Start gathering resources!`],
+    [/^Bekleniyor: (.+) …$/, 'Waiting for: $1 …'],
+    [/^(.+) oyundan ayrıldı — yerini yapay zeka alacak$/, '$1 left the game — the AI takes over'],
+    [/^Yetersiz kaynak: (.+)$/, 'Not enough resources: $1'],
+    [/^(.+) gerekli$/, (m, a) => T(a) + ' required'],
+    [/^Grup (\d) kaydedildi \((\d+)\)$/, 'Group $1 saved ($2)'],
+    [/^Grup (\d) kaydedildi$/, 'Group $1 saved'],
+    [/^Grup (\d) boş — kaydetmek için basılı tut$/, 'Group $1 is empty — press and hold to save'],
+    [/^Grup (\d) boş — Ctrl\+(\d) veya basılı tut$/, 'Group $1 is empty — Ctrl+$2 or press and hold'],
+    [/^Hız: (.+)$/, 'Speed: $1'],
+    [/^(\d+) (.+) seçildi$/, (m, n, u) => `${n} × ${T(u)} selected`],
+    [/^Yeterli (.+) yok$/, (m, r) => `Not enough ${T(r).toLowerCase()}`],
+    [/^(.+) \(takım\):$/, '$1 (team):'],
+    [/^(.+) haritada bir yer işaretledi 📍$/, '$1 pinged a spot on the map 📍'],
+    [/^Kayıtlı oyun yüklendi: (.+)$/, (m, a) => 'Saved game loaded: ' + T(a)],
+    [/^Kayıt (\d)$/, 'Save $1'], [/^💾 Kayıt (\d)$/, '💾 Save $1'],
+    [/^(.+) \(sen\)( 👑)?$/, (m, a, c) => `${a} (you)${c || ''}`],
+    [/^Takım (\d)$/, 'Team $1'],
+    [/^🏰 (.+) — (\d)\/4 oyuncu — Kod (\w+)$/, '🏰 $1 — $2/4 players — Code $3'],
+    [/^Çıkar \((\d+)\)$/, 'Ungarrison ($1)'],
+    [/^Oyuncu (\d)$/, 'Player $1'],
+    [/^(.+) \(av\)$/, (m, a) => T(a) + ' (hunted)'],
+    [/^(.+) tamamlandı$/, '$1 completed'],
+    [/^(.+) sana (\d+) (.+) gönderdi (.+)$/, '$1 sent you $2 $3 $4'],
+    [/^(.+) oyuncusuna (\d+) (.+) gönderildi$/, 'Sent $2 $3 to $1'],
+    [/^💰 200 (.+) gönderdim\.$/, '💰 I sent 200 $1.'],
+    [/^(.+) temizlendi! Hazine: (.+)$/, '$1 cleared! Treasure: $2'],
+    [/^(.+) yenildi!$/, '$1 was defeated!'],
+    [/^(.+) · (\d+) dk · (\d+) oyuncu · (.*)$/, (m, a, mi, n, map) => `${a} · ${mi} min · ${n} players · ${T(map)}`],
+    [/^(\d+) parça · (.+)$/, '$1 pieces · $2'],
+    [/^Üzerine yaz — (.+)$/, (m, a) => 'Overwrite — ' + T(a)],
+  ],
+  help: `
+  <div class="card"><h2>Goal</h2><p>Gather resources with your villagers, grow your town, advance through the ages and destroy all of your rivals’ buildings and units with your army. The last one (or team) standing wins.</p></div>
+  <div class="card"><h2>Resources</h2><ul>
+    <li>🍖 <b>Food</b>: bushes (🫐) and farms. Taken to a Mill or the Town Center.</li>
+    <li>🪵 <b>Wood</b>: trees. 🪙 <b>Gold</b>, 🪨 <b>Stone</b>: mines. Taken to a Storehouse or the Town Center.</li>
+    <li>Houses raise the population limit by +5 (up to 150).</li></ul></div>
+  <div class="card"><h2>Ages</h2><p><b>Village Age</b> → <b>Castle Age</b> (500 food + 2 buildings: Storehouse/Mill/Barracks) → <b>Imperial Age</b> (800 food, 200 gold + 2 buildings: Archery Range/Stable/Workshop). You advance at the Town Center.</p></div>
+  <div class="card"><h2>Defense</h2><ul>
+    <li>🪵 <b>Palisade</b> and 🧱 <b>Stone Wall</b>: pick a start and an end point to draw a wall. Your units pass through a 🚪 <b>Gate</b>, enemies can’t.</li>
+    <li>🛡 <b>Garrison</b>: units enter a Town Center, tower or castle; every unit inside strengthens the building’s arrows and heals.</li>
+    <li>🔔 <b>Alarm</b> (Town Center): all villagers hide; press again to send them back to work.</li>
+    <li>Stances: ⚔️ Aggressive (chases), 🛡️ Defensive (doesn’t stray far), 🧱 Stand ground (never moves).</li></ul></div>
+  <div class="card"><h2>Map and hunting</h2><ul>
+    <li><b>Maps:</b> 🌾 Plains (lakes), 🌊 River (crossed only at shallow fords), ⛰️ Highlands (many hills).</li>
+    <li><b>Hills:</b> attacking from higher ground deals 25% more damage, from below 25% less. Units on a hill see farther.</li>
+    <li><b>Monster camps:</b> the map has 👹 Orc camps and 🟢 Slime pools. Monsters attack anyone who comes close but don’t chase far. Every monster drops loot; defeat the whole camp to win its treasure (Orcs: gold + stone, Slimes: food + wood). A Giant Slime splits in two when it dies! Choose Monsters: None/Few/Many in the setup.</li>
+    <li><b>Hunting:</b> 🐑 sheep and 🐗 wild boar are hunted with villagers, then the meat is gathered quickly. Boars fight back; hunt them with several villagers.</li>
+    <li>Use <b>View</b> in the menu to switch between diagonal (isometric) and top-down view.</li></ul></div>
+  <div class="card"><h2>Multiplayer and saving</h2><ul>
+    <li>💬 <b>Chat:</b> the button in the top bar (Enter on a computer). With “Team only” checked only allies see the message. Quick messages go with one tap; 📍 <b>Ping</b> shows your allies a spot on the map.</li>
+    <li>🤝 <b>Sending resources:</b> from the chat panel you can send food, wood, gold and stone to an ally. AI allies react to “Help me!”, “Let’s attack!” and “I need resources!”.</li>
+    <li>🌐 <b>Game website:</b> if you opened the game from its GitHub page, press “Host a new game” and send the 4-letter code to your friends; they open the same address and join with the code. Players connect to each other directly. If the host leaves, the others continue against the AI.</li>
+    <li>⚙️ <b>Settings:</b> map size, starting resources and population limit are chosen at the start.</li>
+    <li>💾 <b>Saving:</b> save a single-player game from the menu and continue from “Saved games” on the main menu. The game also saves itself every 3 minutes.</li></ul></div>
+  <div class="card"><h2>Technologies</h2><p>Economy at the Mill, Storehouse and Town Center; attack and armor at the ⚒️ Blacksmith; unit upgrades at the Barracks, Archery Range and Stable. Every civilization has its own unique technology at the Castle.</p></div>
+  <div class="card"><h2>Units (rock-paper-scissors)</h2><ul>
+    <li>🔱 Spearmen crush cavalry · 🐎 Cavalry crush archers and siege · 🏹 Archers are good against infantry.</li>
+    <li>🪵 Battering Rams and ☄️ Mangonels wreck buildings. Towers, Town Centers and Castles shoot arrows.</li>
+    <li>Every civilization has a <b>unique unit</b> trained at the Castle.</li></ul></div>
+  <div class="card"><h2>Controls</h2><ul>
+    <li><b>Computer:</b> left-click selects, drag = box select, right-click = move / gather / attack / build. The wheel zooms, arrow keys or the screen edge scroll. Double-click: select all of the same type. <b>H</b> town center, <b>.</b> idle villager, <b>Del</b> delete, <b>Ctrl+1-9</b> groups.</li>
+    <li><b>Shortcuts:</b> the 🔨 quick build menu (B key) picks the nearest villager and lets you place the building. The <b>1 2 3</b> group buttons on the right: press and hold = save the selection, tap = select the group, tap again = move the camera to it. 👥 <b>All</b> in a selected unit’s panel selects all your units of that type.</li>
+    <li><b>Phone:</b> drag your finger from your own unit and release it on a tree, enemy or the ground to give that order. With soldiers selected, tapping a tower/castle sends them inside. Drag with one finger, pinch with two to zoom. Tap a unit = select; with it selected tap the ground/a tree/an enemy = order. Box select with the ⬚ button or by press-and-drag. Double-tap selects all of the same type.</li></ul></div>
+  <div class="card"><h2>Civilizations</h2><div id="helpCivs"></div></div>
+  <div class="card"><h2>Credits</h2><p>Character, building, tree and terrain art: <b>Tiny Swords</b> — Pixel Frog (pixelfrog-assets.itch.io). Shield Mercenary and Slime: <b>Free Characters Animations</b> — OboroPixel. Shadow Archer, Mountain Giant and Orcs: <b>Tiny RPG Character Asset Pack</b> — Zerie. Cavalry, siege engines and other drawings were made for this game.</p></div>
+`,
+};
+
+// Nederlandse vertaling (brontaal: Turks)
+self.LANG_NL = {
+  units: { koylu: 'Dorpeling', kilicli: 'Zwaardvechter', mizrakci: 'Speerdrager', okcu: 'Boogschutter', atli: 'Lichte cavalerie', zirhli: 'Ridder', koc: 'Stormram', mancinik: 'Mangonel', kurtatli: 'Wolfruiter', kalkanli: 'Schildhuurling', dagdevi: 'Bergreus', ork: 'Orkkrijger', orkreis: 'Orkleider', balcik: 'Slijmerd', devbalcik: 'Reuzenslijmerd', golgeokcu: 'Schaduwschutter' },
+  blds: { tc: 'Stadscentrum', ev: 'Huis', degirmen: 'Molen', depo: 'Opslagplaats', ciftlik: 'Boerderij', palisat: 'Palissade', kapi: 'Poort', kisla: 'Kazerne', menzil: 'Schietbaan', ahir: 'Stal', demirci: 'Smederij', atolye: 'Belegeringswerkplaats', kule: 'Wachttoren', sur: 'Stenen muur', kale: 'Kasteel' },
+  techs: {
+    cag2: ['Kasteeltijdperk', 'Nieuwe gebouwen en eenheden. Vereist 2 van: Opslagplaats, Molen, Kazerne.'],
+    cag3: ['Keizerlijk tijdperk', 'Kasteel, unieke eenheid, mangonel. Vereist 2 van: Schietbaan, Stal, Werkplaats, Smederij.'],
+    elarabasi: ['Kruiwagen', 'Dorpelingen 10% sneller, dragen 14 grondstoffen (in plaats van 10)'],
+    saban: ['Paardenhalsband', 'Boerderijopbrengst +15%'], sulama: ['Irrigatie', 'Boerderijopbrengst +15%'],
+    balta: ['Dubbele bijl', 'Hout verzamelen +20%'], testere: ['Beugelzaag', 'Hout verzamelen +20%'],
+    madenci: ['Mijnbouw', 'Goud en steen +15%'], madenci2: ['Diepe mijnbouw', 'Goud en steen +15%'],
+    tatbikat: ['Exercitie', 'Infanterie 15% sneller'], hizli: ['Snelvuur', 'Boogschutters schieten 15% sneller'], atcilik: ['Veeteelt', 'Cavalerie +20 levenspunten'],
+    demir: ['Smeden', 'Aanval infanterie en cavalerie +1'], celik: ['Staalsmeden', 'Aanval infanterie en cavalerie +2'],
+    sivriuc: ['Bevedering', 'Boogschutters, torens, kastelen: aanval +1, bereik +1'], delici: ['Priemkoppen', 'Boogschutters, torens, kastelen: aanval +1, bereik +1'],
+    pulzirh: ['Schubbenpantser', 'Pantser infanterie +1/+1'], zincir: ['Maliënkolder', 'Pantser infanterie +1/+2'], deri: ['Leren pantser', 'Pantser boogschutters +1/+1'], atzirh: ['Paardenpantser', 'Pantser cavalerie +1/+1'],
+    oz_bozkir: ['Wolvenroedel', 'Steppe speciaal: alle cavalerie aanval +2'], oz_liman: ['Huurlingenlegers', 'Haven speciaal: Schildhuurling +25 levenspunten, goud +15%'],
+    oz_dag: ['Granieten muren', 'Berg speciaal: muren, poorten, torens en kastelen 40% sterker'], oz_orman: ['Schaduwpijl', 'Woud speciaal: boogschutters +1 bereik, +2 zicht'],
+  },
+  civs: {
+    bozkir: ['Steppekhanaat', 'Kagan Aybars', 'Cavalerie 15% sneller en 15% goedkoper. Unieke eenheid: Wolfruiter (boogschutter te paard).'],
+    liman: ['Republiek Rode Haven', 'Hertog Valeran', 'Goud 20% sneller verzameld, start met +100 goud. Unieke eenheid: Schildhuurling (zeer bestand tegen pijlen).'],
+    dag: ['Koninkrijk Stenen Berg', 'Koningin Senna', 'Gebouwen 25% sterker, steen 20% sneller, torens +1 bereik. Unieke eenheid: Bergreus (sloopt gebouwen).'],
+    orman: ['Groene Woudbond', 'Wijze Oren', 'Hout 20% sneller verzameld, boogschutters +1 bereik. Unieke eenheid: Schaduwschutter (zeer groot bereik).'],
+  },
+  res: { f: 'Voedsel', w: 'Hout', g: 'Goud', s: 'Steen' },
+  rname: { f: 'voedsel', w: 'hout', g: 'goud', s: 'steen' },
+  quick: { atk: '⚔️ Laten we aanvallen!', help: '🆘 Help me!', def: '🛡️ Ga in de verdediging!', res: '💰 Ik heb grondstoffen nodig!', ok: '👍 Oké', no: '👎 Nee', gg: '🤝 Goed gespeeld' },
+  camp: { ork: 'Orkkamp', balcik: 'Slijmpoel' },
+  colors: ['Blauw', 'Rood', 'Paars', 'Geel'],
+  ages: ['', 'Dorpstijdperk', 'Kasteeltijdperk', 'Keizerlijk tijdperk'],
+  s: {
+    'Dört Diyar — Çağların Savaşı v1.4': 'Vier Rijken — Oorlog der Tijdperken v1.4',
+    'DÖRT DİYAR': 'VIER RIJKEN', 'ÇAĞLARIN SAVAŞI': 'OORLOG DER TIJDPERKEN',
+    '⚔️ Tek Oyunculu': '⚔️ Eén speler', '🌐 Çok Oyunculu (4 kişiye kadar)': '🌐 Multiplayer (tot 4 spelers)',
+    '🎓 Eğitim (ilk oyunun için)': '🎓 Handleiding (voor je eerste spel)', '📂 Kayıtlı oyunlar': '📂 Opgeslagen spellen', '📜 Nasıl Oynanır': '📜 Hoe speel je',
+    'Bilgisayarda fare ve klavye, telefonda dokunmatik ile oynanır. Telefonda yatay tutman önerilir.': 'Speel met muis en toetsenbord op de computer, of met aanraken op de telefoon. Houd je telefoon bij voorkeur liggend.',
+    'Sürüm 1.4': 'Versie 1.4', '‹ Ana menü': '‹ Hoofdmenu', 'Medeniyetini seç': 'Kies je beschaving', 'Rakipler': 'Tegenstanders', 'İsmin': 'Je naam',
+    'Harita': 'Kaart', '🌾 Ova (göller)': '🌾 Vlakte (meren)', '🌊 Nehir (geçitli)': '🌊 Rivier (met doorwaadplaatsen)', '⛰️ Yayla (tepeler)': '⛰️ Hoogland (heuvels)',
+    'Boyut': 'Grootte', 'Küçük': 'Klein', 'Orta': 'Middel', 'Büyük': 'Groot', 'Kaynak': 'Grondstoffen', 'Normal': 'Normaal', 'Bol': 'Veel', 'Nüfus': 'Bevolking',
+    'Canavar': 'Monsters', 'Yok': 'Geen', 'Az': 'Weinig', 'Çok': 'Veel', 'Düşük': 'Laag', 'Yüksek': 'Hoog',
+    '+ Rakip ekle': '+ Tegenstander toevoegen', 'Takımlı (sen + 2. oyuncu müttefik)': 'Teams (jij + 2e speler bondgenoten)', 'Savaşı Başlat': 'Start de strijd',
+    'Çok oyunculu şu an kullanılamıyor': 'Multiplayer is nu niet beschikbaar',
+    'Çok oyunculu mod, oyunu claude.ai üzerinde açtığında çalışır. Arkadaşlarının katılması için bu sayfayı onlarla paylaşman (davet etmen) gerekir; herkes sayfayı aynı anda açık tutar. Bu arada tek oyunculu modda yapay zekaya karşı oynayabilirsin.': 'Multiplayer heeft een verbinding tussen spelers nodig. Ondertussen kun je alleen tegen de computer spelen.',
+    'Oyuncu': 'Speler', 'Açık oyunlar': 'Open spellen', 'Aranıyor…': 'Zoeken…', 'Oda kodu': 'Kamercode', 'Katıl': 'Meedoen', '🏰 Yeni oyun kur': '🏰 Nieuw spel maken',
+    'Arkadaşların bu sayfayı açınca oyunun burada listelenir ya da oda kodunla katılırlar. Sayfayı onlarla claude.ai’den paylaşman gerekir.': 'Als je vrienden deze pagina openen, staat je spel hier, of ze doen mee met de kamercode.',
+    'Oda': 'Kamer', 'Takımlı oyun (takım seçimi açılır)': 'Teamspel (teamkeuze aan)', 'Medeniyetin': 'Je beschaving', 'Odadan çık': 'Kamer verlaten', 'Yükleniyor…': 'Laden…',
+    'Hızlı inşa (B)': 'Snel bouwen (B)', 'Boştaki köylü (.)': 'Werkloze dorpeling (.)', 'Tüm ordu': 'Hele leger', 'Şehir merkezi (H)': 'Stadscentrum (H)', 'Kutu seçimi': 'Vak selecteren',
+    '💬 Sohbet': '💬 Chat', 'Sadece takım': 'Alleen team', 'Mesaj yaz…': 'Typ een bericht…', 'Gönder': 'Verstuur', 'Kapat': 'Sluiten', 'Atla ›': 'Overslaan ›', 'Devam ›': 'Verder ›',
+    'Menü': 'Menu', 'Devam et': 'Verder spelen', '💾 Oyunu kaydet': '💾 Spel opslaan', '🏳️ Teslim ol': '🏳️ Opgeven', 'Ana menüye dön': 'Terug naar hoofdmenu', '💾 Kaydet': '💾 Opslaan',
+    'Geri': 'Terug', 'İzlemeye devam': 'Blijven kijken', 'Ana menü': 'Hoofdmenu', 'Sen': 'Jij', '🤖 Yapay zeka': '🤖 Computer', '🎲 Rastgele': '🎲 Willekeurig', 'Kolay': 'Makkelijk', 'Zor': 'Moeilijk',
+    'Komutan': 'Commandant', 'Oyun kurunca çıkan 4 harfli kodu arkadaşlarına gönder. Onlar bu sitenin aynı adresini açıp kodu yazarak katılır. İnternet bağlantısı gerekir.': 'Maak een spel en stuur de code van 4 letters naar je vrienden. Zij openen dezelfde site en typen de code om mee te doen. Een internetverbinding is nodig.',
+    'Bağlanıyor…': 'Verbinden…', 'Oyun kur ve 4 harfli oda kodunu arkadaşlarına gönder; onlar kodu yazıp katılsın.': 'Maak een spel en stuur de kamercode van 4 letters naar je vrienden; zij typen de code om mee te doen.',
+    'Şu an açık oyun yok. Yeni bir oyun kur ya da kodla katıl.': 'Er zijn nu geen open spellen. Maak een nieuw spel of doe mee met een code.',
+    'Bağlantı kurulamadı, tekrar dene.': 'Verbinden mislukt, probeer opnieuw.', 'Bu kodla açık oyun bulunamadı. Kodu kontrol et.': 'Geen open spel met deze code. Controleer de code.',
+    'Bu oda kodu kullanımda, tekrar dene.': 'Deze kamercode is in gebruik, probeer opnieuw.', 'Bağlantı kütüphanesi yüklenemedi (internet bağlantını kontrol et).': 'De verbindingsbibliotheek kon niet laden (controleer je internetverbinding).',
+    'Odaya girilemedi.': 'Kon de kamer niet binnengaan.', 'Bağlantı koptu': 'Verbinding verbroken', 'Oda kurucusu bekleniyor…': 'Wachten op de maker van de kamer…',
+    'Açık — oyuncu bekleniyor': 'Open — wachten op een speler', 'Kapalı': 'Gesloten', 'Aç': 'Openen', '+ YZ': '+ Computer',
+    'Başlamak için en az 2 oyuncu (insan veya yapay zeka) gerekli.': 'Om te starten zijn minstens 2 spelers (mens of computer) nodig.', 'Hazır olduğunda başlat.': 'Start wanneer je klaar bent.',
+    'Kurucunun başlatması bekleniyor…': 'Wachten tot de maker start…', 'Oyun sensiz başladı.': 'Het spel is zonder jou begonnen.',
+    '🔊 Ses açık': '🔊 Geluid aan', '🔇 Ses kapalı': '🔇 Geluid uit', '🎵 Müzik açık': '🎵 Muziek aan', '🎵 Müzik kapalı': '🎵 Muziek uit',
+    'Bağlantın koptu, diğer oyuncular devam ediyor.': 'Je verbinding is verbroken, de andere spelers gaan door.', 'Uyarı: oyuncular arasında senkron farkı oluştu.': 'Waarschuwing: de spellen van de spelers lopen niet meer gelijk.',
+    '🏆 Zafer!': '🏆 Overwinning!', 'Oyun bitti': 'Spel voorbij', '💀 Yenildin': '💀 Je bent verslagen', 'Öldürdü': 'Gedood', 'Kaybetti': 'Verloren', 'Topladı': 'Verzameld',
+    'Grafik: Otomatik': 'Graphics: Automatisch', 'Grafik: Yüksek': 'Graphics: Hoog', 'Grafik: Düşük': 'Graphics: Laag',
+    'Tehlikeli! Birkaç köylüyle avla.': 'Gevaarlijk! Jaag met meerdere dorpelingen.', 'Köylüyle kes, sonra eti topla.': 'Slacht met een dorpeling en verzamel dan het vlees.',
+    'Ağaç': 'Boom', 'Altın madeni': 'Goudmijn', 'Taş ocağı': 'Steengroeve', 'Meyve çalısı': 'Bessenstruik', 'Koyun': 'Schaap', 'Yaban domuzu': 'Everzwijn',
+    'Boşta': 'Werkloos', 'Topluyor': 'Verzamelt', 'İnşa ediyor': 'Bouwt', 'Yürüyor': 'Loopt', 'Taşıyor': 'Draagt', 'Saldırıyor': 'Valt aan',
+    'Saldırgan': 'Agressief', 'Savunma': 'Verdedigend', 'Yerinde': 'Positie houden', 'İptal': 'Annuleren', 'Nüfus dolu — ev inşa et!': 'Bevolking vol — bouw een huis!',
+    '👥 Tümü': '👥 Alle', 'Tümü': 'Alle', '🐾 Vahşi': '🐾 Wild',
+    'Askeri ›': 'Militair ›', 'Askeri binalar': 'Militaire gebouwen', '‹ Ekonomi': '‹ Economie', 'Ekonomik binalar': 'Economische gebouwen',
+    'Görüş alanındaki düşmanı kovalar': 'Achtervolgt vijanden in zicht', 'Saldırır ama yerinden fazla uzaklaşmaz': 'Valt aan maar gaat niet ver weg', 'Hiç hareket etmez, sadece menzildekine saldırır': 'Beweegt nooit, valt alleen aan wat binnen bereik is',
+    'Gir': 'Naar binnen', 'Garnizon': 'Garnizoen', 'En yakın Şehir Merkezi, kule veya kaleye girer. İçerideki her birim bina oklarını güçlendirir ve iyileşir.': 'Gaat het dichtstbijzijnde stadscentrum, de toren of het kasteel binnen. Elke eenheid binnen versterkt de pijlen van het gebouw en geneest.',
+    'Dur': 'Stop', 'Sil': 'Verwijder', 'Seçili birimleri sil (iki kez bas)': 'Geselecteerde eenheden verwijderen (twee keer drukken)',
+    'Alarmı bitir': 'Alarm stoppen', 'Saklanan köylüler işlerine döner': 'Verstopte dorpelingen gaan weer aan het werk', 'Alarm': 'Alarm', 'Kasaba alarmı': 'Stadsklok',
+    'Yakındaki tüm köylüler en yakın Şehir Merkezi, kule veya kaleye saklanır': 'Alle dorpelingen in de buurt verstoppen zich in het dichtstbijzijnde stadscentrum, de toren of het kasteel',
+    'İçerideki birimleri dışarı çıkar': 'Eenheden binnen naar buiten laten', 'Toplanma': 'Verzamelpunt', 'Toplanma noktası: sonra haritaya dokun': 'Verzamelpunt: tik daarna op de kaart', 'Toplanma noktası: sonra haritaya tıkla (veya sağ tık)': 'Verzamelpunt: klik daarna op de kaart (of rechtsklik)',
+    'Yık': 'Slopen', 'Binayı yık (iki kez bas)': 'Gebouw slopen (twee keer drukken)', 'Girilecek bina yok (Şehir Merkezi, kule veya kale)': 'Geen gebouw om binnen te gaan (stadscentrum, toren of kasteel)',
+    '+5 nüfus': '+5 bevolking', 'Sonsuz yemek kaynağı (1 köylü)': 'Eindeloze voedselbron (1 dorpeling)', 'Yemek bırakma noktası; çiftlik teknolojileri': 'Afgiftepunt voor voedsel; boerderijtechnologieën',
+    'Odun, altın, taş bırakma noktası; teknolojiler': 'Afgiftepunt voor hout, goud, steen; technologieën', 'Köylü üretir, çağ atlatır, ok atar, +5 nüfus, 10 kişilik garnizon': 'Traint dorpelingen, gaat naar een nieuw tijdperk, schiet pijlen, +5 bevolking, garnizoen van 10',
+    'Kılıçlı ve mızrakçı': 'Zwaardvechters en speerdragers', 'Okçu': 'Boogschutter', 'Atlı birimler': 'Cavalerie', 'Koçbaşı ve mancınık': 'Stormrammen en mangonels', 'Saldırı ve zırh geliştirmeleri': 'Verbeteringen voor aanval en pantser',
+    'Yakındaki düşmanlara ok atar, 5 kişilik garnizon': 'Schiet op vijanden in de buurt, garnizoen van 5', 'Özel birim ve özel teknoloji, güçlü savunma, 20 kişilik garnizon': 'Unieke eenheid en unieke technologie, sterke verdediging, garnizoen van 20',
+    'Ucuz ahşap duvar. Başlangıç ve bitiş noktasına dokun, sonra ✓.': 'Goedkope houten muur. Tik op begin- en eindpunt, dan ✓.', 'Ucuz ahşap duvar. Başlangıca tıkla, bitişe tıkla.': 'Goedkope houten muur. Klik op het begin, klik op het einde.',
+    'Sağlam taş duvar. Başlangıç ve bitiş noktasına dokun, sonra ✓.': 'Sterke stenen muur. Tik op begin- en eindpunt, dan ✓.', 'Sağlam taş duvar. Başlangıca tıkla, bitişe tıkla.': 'Sterke stenen muur. Klik op het begin, klik op het einde.',
+    'Senin ve müttefiklerinin birimleri geçer, düşman geçemez': 'Jouw eenheden en die van je bondgenoten kunnen erdoor, vijanden niet', 'Sadece binalara saldırır': 'Valt alleen gebouwen aan',
+    'Silmek için tekrar bas': 'Druk nogmaals om te verwijderen', 'Üretim sırası dolu': 'Productiewachtrij is vol', 'Zaten araştırılıyor': 'Wordt al onderzocht',
+    'Önce 2 bina gerekli: Depo, Değirmen veya Kışla': 'Eerst 2 gebouwen nodig: Opslagplaats, Molen of Kazerne', 'Önce 2 bina gerekli: Menzil, Ahır veya Atölye': 'Eerst 2 gebouwen nodig: Schietbaan, Stal of Werkplaats',
+    'Yetersiz kaynak': 'Niet genoeg grondstoffen', 'Duvarın başlangıcına, sonra bitişine dokun ve ✓ bas': 'Tik op het begin van de muur, dan op het einde, en druk op ✓', 'Duvarın başlangıcına tıkla, sonra bitişine tıkla': 'Klik op het begin van de muur, dan op het einde',
+    'Buraya duvar yapılamaz': 'Hier kan geen muur komen', 'Buraya inşa edilemez': 'Hier kun je niet bouwen', 'Boşta köylü yok': 'Geen werkloze dorpelingen', 'Ordun yok': 'Je hebt geen leger',
+    'Hoş geldin, komutan!': 'Welkom, commandant!',
+    'Bu kısa eğitim ilk adımları gösterir. Önce haritada gezin: tek parmakla kaydır, iki parmakla yakınlaştır. Hazır olunca “Devam”a bas.': 'Deze korte handleiding toont de eerste stappen. Kijk eerst rond op de kaart: sleep met één vinger, zoom met twee vingers. Druk op “Verder” als je klaar bent.',
+    'Bu kısa eğitim ilk adımları gösterir. Önce haritada gezin: ok tuşları veya fareyi ekran kenarına götürerek kaydır, tekerlekle yakınlaştır. Hazır olunca “Devam”a bas.': 'Deze korte handleiding toont de eerste stappen. Kijk eerst rond op de kaart: scroll met de pijltjestoetsen of door de muis naar de schermrand te bewegen, zoom met het wieltje. Druk op “Verder” als je klaar bent.',
+    'Köylü seç': 'Kies een dorpeling', 'Hasır şapkalı bir köylüye dokun.': 'Tik op een dorpeling met een strohoed.', 'Hasır şapkalı bir köylüye sol tıkla.': 'Klik met links op een dorpeling met een strohoed.',
+    'Odun topla': 'Hout verzamelen', 'Köylü seçiliyken bir ağaca dokun. Köylü odunu kesip Şehir Merkezi’ne taşır.': 'Tik met de dorpeling geselecteerd op een boom. De dorpeling hakt hout en brengt het naar het stadscentrum.',
+    'Köylü seçiliyken bir ağaca sağ tıkla. Köylü odunu kesip Şehir Merkezi’ne taşır.': 'Klik met de dorpeling geselecteerd met rechts op een boom. De dorpeling hakt hout en brengt het naar het stadscentrum.',
+    'Yemek topla': 'Voedsel verzamelen', 'Başka bir köylüyü seç ve kırmızı meyveli çalılara gönder.': 'Kies een andere dorpeling en stuur hem naar de struiken met rode bessen.',
+    'Köylü üret': 'Dorpelingen trainen', 'Soldaki 🏛️ düğmesiyle Şehir Merkezi’ni seç, sonra 👷 düğmesine bas. 6 köylüye ulaş. Yeni köylüleri de işe gönder!': 'Kies het stadscentrum met de 🏛️-knop links en druk dan op 👷. Kom tot 6 dorpelingen. Zet de nieuwe dorpelingen ook aan het werk!',
+    'Ev inşa et': 'Bouw een huis', 'Bir köylü seç, 🏠 Ev düğmesine bas ve haritaya yerleştir (dokun, sonra ✓). Her ev nüfus sınırını 5 artırır.': 'Kies een dorpeling, druk op de knop 🏠 Huis en plaats het op de kaart (tik, dan ✓). Elk huis verhoogt de bevolkingslimiet met 5.',
+    'Bir köylü seç, 🏠 Ev düğmesine bas ve haritaya yerleştir. Her ev nüfus sınırını 5 artırır.': 'Kies een dorpeling, druk op de knop 🏠 Huis en plaats het op de kaart. Elk huis verhoogt de bevolkingslimiet met 5.',
+    'Değirmen kur': 'Bouw een molen', 'Meyve çalılarının yanına 🌾 Değirmen kur. Köylüler yemeği daha kısa yoldan taşır.': 'Bouw een 🌾 Molen naast de bessenstruiken. Dan hoeven dorpelingen minder ver te lopen met voedsel.',
+    'Kışla inşa et': 'Bouw een kazerne', 'Köylü seç → “Askeri ›” sayfası → ⚔️ Kışla.': 'Kies een dorpeling → pagina “Militair ›” → ⚔️ Kazerne.',
+    'Asker üret': 'Train soldaten', 'Kışlayı seç ve 4 asker üret. 🔱 Mızrakçı atlılara karşı iyidir, 🗡️ Kılıçlı her işe yarar.': 'Kies de kazerne en train 4 soldaten. 🔱 Speerdragers zijn goed tegen cavalerie, 🗡️ Zwaardvechters zijn overal goed voor.',
+    'Davranış seç': 'Kies een houding', 'Soldaki ⚔️ düğmesiyle ordunu seç ve 🛡️ Savunma davranışına geçir. Böyle askerler düşmanı uzağa kovalamaz.': 'Kies je leger met de ⚔️-knop links en zet het op 🛡️ Verdedigend. Dan achtervolgen soldaten vijanden niet ver.',
+    'Kale Çağı’na geç': 'Ga naar het Kasteeltijdperk', 'Bir 📦 Depo kur (Değirmen + Depo = 2 bina), sonra Şehir Merkezi’nden 🏯 Kale Çağı’nı araştır. Sana 300 yemek hediye ettim!': 'Bouw een 📦 Opslagplaats (Molen + Opslagplaats = 2 gebouwen) en onderzoek dan 🏯 Kasteeltijdperk in het stadscentrum. Je krijgt 300 voedsel cadeau!',
+    'Kendini koru': 'Bescherm jezelf', 'Köylü seç ve 🪵 Palisat ile üssünün önüne bir duvar çek. Araya bir 🚪 Kapı koy: senin birimlerin geçer, düşman geçemez.': 'Kies een dorpeling en bouw met 🪵 Palissade een muur voor je basis. Zet er een 🚪 Poort in: jouw eenheden kunnen erdoor, vijanden niet.',
+    'Düşmanı yen!': 'Versla de vijand!', 'Ordunu büyüt (🪵 Koçbaşı binaları hızla yıkar), ⚔️ ile tümünü seç ve düşmanın Şehir Merkezi’ne saldır. Düşman haritanın karşı köşesinde. Saldırı gelirse 🔔 Alarm ile köylülerini sakla.': 'Laat je leger groeien (🪵 Stormrammen slopen gebouwen snel), kies alles met ⚔️ en val het stadscentrum van de vijand aan. De vijand zit in de andere hoek van de kaart. Word je aangevallen, verstop je dorpelingen dan met 🔔 Alarm.',
+    '🎓 Eğitim tamamlandı! Artık hazırsın.': '🎓 Handleiding voltooid! Je bent er klaar voor.', 'Köylün yok': 'Je hebt geen dorpelingen', 'Önce birim seç': 'Kies eerst eenheden',
+    'Görünüm: Çapraz (izometrik)': 'Weergave: Schuin (isometrisch)', 'Görünüm: Üstten': 'Weergave: Van boven', '📍 İşaretle': '📍 Markeren', 'Haritada bir yere dokun': 'Tik op een plek op de kaart', 'Haritada bir yere tıkla': 'Klik op een plek op de kaart',
+    '🤝 Müttefike kaynak gönder': '🤝 Grondstoffen naar bondgenoot sturen', 'Otomatik kayıt': 'Automatisch opgeslagen', '💾 Otomatik kayıt': '💾 Automatisch opgeslagen',
+    'Kayıtların claude.ai hesabına bağlı: başka cihazdan bu sayfayı açarak da devam edebilirsin.': 'Je opgeslagen spellen staan in je claude.ai-account: je kunt ook verder spelen door deze pagina op een ander apparaat te openen.',
+    'Kayıtlar bu tarayıcıda tutulur.': 'Spellen worden in deze browser bewaard.', 'Hesap bağlantısı kontrol ediliyor…': 'Accountverbinding controleren…',
+    'Henüz kayıtlı oyun yok. Tek oyunculu bir oyunda menüden “Oyunu kaydet”e bas; oyun ayrıca 3 dakikada bir kendiliğinden kaydedilir.': 'Nog geen opgeslagen spellen. Druk in een spel voor één speler in het menu op “Spel opslaan”; het spel slaat zichzelf ook elke 3 minuten op.',
+    'Hesaptaki kayıtlara şu an ulaşılamadı; bu cihazdaki kayıtlar gösteriliyor.': 'De spellen in je account zijn nu niet bereikbaar; de spellen op dit apparaat worden getoond.',
+    '▶ Devam': '▶ Verder', 'Emin misin?': 'Weet je het zeker?', 'Bu kayıt açılamadı.': 'Dit opgeslagen spel kon niet worden geopend.', 'Kaydediliyor…': 'Opslaan…',
+    '✓ Kaydedildi (bu cihaz + hesabın)': '✓ Opgeslagen (dit apparaat + je account)', '✓ Bu cihaza kaydedildi': '✓ Opgeslagen op dit apparaat', 'Kaydedilemedi.': 'Opslaan mislukt.',
+    'Saldırı altındasınız!': 'Je wordt aangevallen!', 'Yaban domuzu saldırıyor!': 'Een everzwijn valt aan!', '🛡️ Yardıma geliyorum!': '🛡️ Ik kom helpen!',
+    '⚔️ Ordum hazırlanıyor, saldırıyoruz!': '⚔️ Mijn leger maakt zich klaar, we vallen aan!', '😕 Şu an ayıracak kaynağım yok.': '😕 Ik heb nu geen grondstoffen over.',
+    '💰 Hazine!': '💰 Schat!', 'Birime dokunarak seç': 'Tik op een eenheid om te kiezen', 'Seçmek için tıkla veya sürükle': 'Klik of sleep om te selecteren', 'Boş': 'Leeg',
+    'Ova': 'Vlakte', 'Nehir': 'Rivier', 'Yayla': 'Hoogland', 'Hız: 1x': 'Snelheid: 1x',
+  },
+  p: [
+    [/^Lider: (.+)$/, 'Leider: $1'],
+    [/^(\d+) birim seçili$/, '$1 eenheden geselecteerd'],
+    [/^Can (\d+) · Saldırı (\d+)( · Menzil (\d+))? · Zırh (\S+)$/, (m, hp, at, r, rng, ar) => `Leven ${hp} · Aanval ${at}${r ? ' · Bereik ' + rng : ''} · Pantser ${ar}`],
+    [/^Bonus: (.+)$/, (m, b) => 'Bonus: ' + b.replace(/atlılara/g, 'tegen cavalerie').replace(/okçulara/g, 'tegen boogschutters').replace(/piyadeye/g, 'tegen infanterie').replace(/binalara/g, 'tegen gebouwen').replace(/kuşatmaya/g, 'tegen belegering')],
+    [/^Taşıyor: (.+)$/, 'Draagt: $1'],
+    [/^İnşaat: %(\d+)$/, 'Bouw: $1%'],
+    [/^🛡 Garnizon (.+)$/, '🛡 Garnizoen $1'],
+    [/^— (.+) \(her parça\)$/, '— $1 (per stuk)'],
+    [/^(.+) — (\S+) renktesin\. Kaynak toplamaya başla!$/, (m, a, c) => `${a} — jij bent ${T(c).toLowerCase()}. Begin met grondstoffen verzamelen!`],
+    [/^Bekleniyor: (.+) …$/, 'Wachten op: $1 …'],
+    [/^(.+) oyundan ayrıldı — yerini yapay zeka alacak$/, '$1 heeft het spel verlaten — de computer neemt het over'],
+    [/^Yetersiz kaynak: (.+)$/, 'Niet genoeg grondstoffen: $1'],
+    [/^(.+) gerekli$/, (m, a) => T(a) + ' vereist'],
+    [/^Grup (\d) kaydedildi \((\d+)\)$/, 'Groep $1 opgeslagen ($2)'],
+    [/^Grup (\d) kaydedildi$/, 'Groep $1 opgeslagen'],
+    [/^Grup (\d) boş — kaydetmek için basılı tut$/, 'Groep $1 is leeg — ingedrukt houden om op te slaan'],
+    [/^Grup (\d) boş — Ctrl\+(\d) veya basılı tut$/, 'Groep $1 is leeg — Ctrl+$2 of ingedrukt houden'],
+    [/^Hız: (.+)$/, 'Snelheid: $1'],
+    [/^(\d+) (.+) seçildi$/, (m, n, u) => `${n} × ${T(u)} geselecteerd`],
+    [/^Yeterli (.+) yok$/, (m, r) => `Niet genoeg ${T(r).toLowerCase()}`],
+    [/^(.+) \(takım\):$/, '$1 (team):'],
+    [/^(.+) haritada bir yer işaretledi 📍$/, '$1 heeft een plek op de kaart gemarkeerd 📍'],
+    [/^Kayıtlı oyun yüklendi: (.+)$/, (m, a) => 'Opgeslagen spel geladen: ' + T(a)],
+    [/^Kayıt (\d)$/, 'Opslag $1'], [/^💾 Kayıt (\d)$/, '💾 Opslag $1'],
+    [/^(.+) \(sen\)( 👑)?$/, (m, a, c) => `${a} (jij)${c || ''}`],
+    [/^Takım (\d)$/, 'Team $1'],
+    [/^🏰 (.+) — (\d)\/4 oyuncu — Kod (\w+)$/, '🏰 $1 — $2/4 spelers — Code $3'],
+    [/^Çıkar \((\d+)\)$/, 'Naar buiten ($1)'],
+    [/^Oyuncu (\d)$/, 'Speler $1'],
+    [/^(.+) \(av\)$/, (m, a) => T(a) + ' (gejaagd)'],
+    [/^(.+) tamamlandı$/, '$1 voltooid'],
+    [/^(.+) sana (\d+) (.+) gönderdi (.+)$/, '$1 stuurde je $2 $3 $4'],
+    [/^(.+) oyuncusuna (\d+) (.+) gönderildi$/, '$2 $3 gestuurd naar $1'],
+    [/^💰 200 (.+) gönderdim\.$/, '💰 Ik heb 200 $1 gestuurd.'],
+    [/^(.+) temizlendi! Hazine: (.+)$/, '$1 opgeruimd! Schat: $2'],
+    [/^(.+) yenildi!$/, '$1 is verslagen!'],
+    [/^(.+) · (\d+) dk · (\d+) oyuncu · (.*)$/, (m, a, mi, n, map) => `${a} · ${mi} min · ${n} spelers · ${T(map)}`],
+    [/^(\d+) parça · (.+)$/, '$1 stuks · $2'],
+    [/^Üzerine yaz — (.+)$/, (m, a) => 'Overschrijven — ' + T(a)],
+  ],
+  help: `
+  <div class="card"><h2>Doel</h2><p>Verzamel grondstoffen met je dorpelingen, laat je stad groeien, ga naar nieuwe tijdperken en vernietig met je leger alle gebouwen en eenheden van je tegenstanders. Wie (of welk team) als laatste overblijft, wint.</p></div>
+  <div class="card"><h2>Grondstoffen</h2><ul>
+    <li>🍖 <b>Voedsel</b>: struiken (🫐) en boerderijen. Wordt naar een Molen of het Stadscentrum gebracht.</li>
+    <li>🪵 <b>Hout</b>: bomen. 🪙 <b>Goud</b>, 🪨 <b>Steen</b>: mijnen. Wordt naar een Opslagplaats of het Stadscentrum gebracht.</li>
+    <li>Huizen verhogen de bevolkingslimiet met +5 (tot 150).</li></ul></div>
+  <div class="card"><h2>Tijdperken</h2><p><b>Dorpstijdperk</b> → <b>Kasteeltijdperk</b> (500 voedsel + 2 gebouwen: Opslagplaats/Molen/Kazerne) → <b>Keizerlijk tijdperk</b> (800 voedsel, 200 goud + 2 gebouwen: Schietbaan/Stal/Werkplaats). Je gaat naar een nieuw tijdperk via het Stadscentrum.</p></div>
+  <div class="card"><h2>Verdediging</h2><ul>
+    <li>🪵 <b>Palissade</b> en 🧱 <b>Stenen muur</b>: kies een begin- en eindpunt om een muur te trekken. Jouw eenheden kunnen door een 🚪 <b>Poort</b>, vijanden niet.</li>
+    <li>🛡 <b>Garnizoen</b>: eenheden gaan een stadscentrum, toren of kasteel binnen; elke eenheid binnen versterkt de pijlen van het gebouw en geneest.</li>
+    <li>🔔 <b>Alarm</b> (Stadscentrum): alle dorpelingen verstoppen zich; druk nog eens om ze weer aan het werk te zetten.</li>
+    <li>Houdingen: ⚔️ Agressief (achtervolgt), 🛡️ Verdedigend (gaat niet ver weg), 🧱 Positie houden (beweegt nooit).</li></ul></div>
+  <div class="card"><h2>Kaart en jacht</h2><ul>
+    <li><b>Kaarten:</b> 🌾 Vlakte (meren), 🌊 Rivier (alleen over te steken bij ondiepe doorwaadplaatsen), ⛰️ Hoogland (veel heuvels).</li>
+    <li><b>Heuvels:</b> wie van hoger terrein aanvalt doet 25% meer schade, van lager terrein 25% minder. Op een heuvel zie je verder.</li>
+    <li><b>Monsterkampen:</b> op de kaart liggen 👹 Orkkampen en 🟢 Slijmpoelen. Monsters vallen iedereen aan die te dichtbij komt, maar achtervolgen niet ver. Elk monster laat buit achter; versla het hele kamp en je wint de schat (Orks: goud + steen, Slijm: voedsel + hout). Een Reuzenslijmerd splitst in tweeën als hij sterft! Kies bij het instellen Monsters: Geen/Weinig/Veel.</li>
+    <li><b>Jacht:</b> 🐑 schapen en 🐗 everzwijnen jaag je met dorpelingen, daarna wordt het vlees snel verzameld. Everzwijnen vechten terug; jaag met meerdere dorpelingen.</li>
+    <li>Met <b>Weergave</b> in het menu wissel je tussen schuine (isometrische) en bovenaanzicht.</li></ul></div>
+  <div class="card"><h2>Multiplayer en opslaan</h2><ul>
+    <li>💬 <b>Chat:</b> de knop in de bovenbalk (Enter op een computer). Met “Alleen team” aangevinkt zien alleen bondgenoten het bericht. Snelle berichten verstuur je met één tik; 📍 <b>Markeren</b> toont je bondgenoten een plek op de kaart.</li>
+    <li>🤝 <b>Grondstoffen sturen:</b> via het chatpaneel kun je voedsel, hout, goud en steen naar een bondgenoot sturen. Computer-bondgenoten reageren op “Help me!”, “Laten we aanvallen!” en “Ik heb grondstoffen nodig!”.</li>
+    <li>🌐 <b>Website van het spel:</b> heb je het spel via de GitHub-pagina geopend, druk dan op “Nieuw spel maken” en stuur de code van 4 letters naar je vrienden; zij openen hetzelfde adres en doen mee met de code. Spelers maken rechtstreeks verbinding met elkaar. Als de maker vertrekt, spelen de anderen verder tegen de computer.</li>
+    <li>⚙️ <b>Instellingen:</b> kaartgrootte, startgrondstoffen en bevolkingslimiet kies je aan het begin.</li>
+    <li>💾 <b>Opslaan:</b> sla een spel voor één speler op via het menu en speel verder via “Opgeslagen spellen” in het hoofdmenu. Het spel slaat zichzelf ook elke 3 minuten op.</li></ul></div>
+  <div class="card"><h2>Technologieën</h2><p>Economie in de Molen, Opslagplaats en het Stadscentrum; aanval en pantser in de ⚒️ Smederij; eenheidsverbeteringen in de Kazerne, Schietbaan en Stal. Elke beschaving heeft in het Kasteel een eigen unieke technologie.</p></div>
+  <div class="card"><h2>Eenheden (steen-papier-schaar)</h2><ul>
+    <li>🔱 Speerdragers verslaan cavalerie · 🐎 Cavalerie verslaat boogschutters en belegeringswapens · 🏹 Boogschutters zijn goed tegen infanterie.</li>
+    <li>🪵 Stormrammen en ☄️ Mangonels slopen gebouwen. Torens, stadscentra en kastelen schieten pijlen.</li>
+    <li>Elke beschaving heeft een <b>unieke eenheid</b> die in het Kasteel wordt getraind.</li></ul></div>
+  <div class="card"><h2>Besturing</h2><ul>
+    <li><b>Computer:</b> linksklik selecteert, slepen = vak selecteren, rechtsklik = lopen / verzamelen / aanvallen / bouwen. Het wieltje zoomt, pijltjestoetsen of de schermrand scrollen. Dubbelklik: alles van hetzelfde type selecteren. <b>H</b> stadscentrum, <b>.</b> werkloze dorpeling, <b>Del</b> verwijderen, <b>Ctrl+1-9</b> groepen.</li>
+    <li><b>Sneltoetsen:</b> het 🔨 snelbouwmenu (B-toets) kiest de dichtstbijzijnde dorpeling en laat je het gebouw plaatsen. De groepsknoppen <b>1 2 3</b> rechts: ingedrukt houden = selectie opslaan, tikken = groep kiezen, nog eens tikken = camera ernaartoe. 👥 <b>Alle</b> in het paneel van een eenheid selecteert al je eenheden van dat type.</li>
+    <li><b>Telefoon:</b> sleep je vinger vanaf je eigen eenheid en laat los op een boom, vijand of de grond om dat bevel te geven. Met soldaten geselecteerd stuurt een tik op een toren/kasteel ze naar binnen. Sleep met één vinger, zoom met twee. Tik op een eenheid = selecteren; tik daarna op de grond/een boom/een vijand = bevel. Vak selecteren met de ⬚-knop of door ingedrukt te houden en te slepen. Dubbeltik selecteert alles van hetzelfde type.</li></ul></div>
+  <div class="card"><h2>Beschavingen</h2><div id="helpCivs"></div></div>
+  <div class="card"><h2>Makers</h2><p>Personages, gebouwen, bomen en terrein: <b>Tiny Swords</b> — Pixel Frog (pixelfrog-assets.itch.io). Schildhuurling en Slijmerd: <b>Free Characters Animations</b> — OboroPixel. Schaduwschutter, Bergreus en Orks: <b>Tiny RPG Character Asset Pack</b> — Zerie. Cavalerie, belegeringswapens en andere tekeningen zijn voor dit spel gemaakt.</p></div>
+`,
+};
+
+// ===================== LANGUAGES (Türkçe / English / Nederlands) =====================
+// Turkish is the source language. Visible text is translated where it appears: every text node and
+// tooltip added to the page passes through T(); game data names (units, buildings, techs, civs) are
+// swapped once at start-up. Dictionaries live in LANG_DATA (lang_en.js / lang_nl.js).
+const LANGS = { tr: '🇹🇷 Türkçe', en: '🇬🇧 English', nl: '🇳🇱 Nederlands' };
+const LANG = (() => {
+  try { const l = localStorage.getItem('dd_lang'); if (LANGS[l]) return l; } catch (e) {}
+  for (const n of (navigator.languages || [navigator.language || ''])) { const k = String(n).slice(0, 2).toLowerCase(); if (LANGS[k]) return k; }
+  return 'tr';
+})();
+const LANG_DATA = { en: self.LANG_EN, nl: self.LANG_NL };
+const TRX = { s: new Map(), p: [] };
+function T(s) {
+  if (LANG === 'tr' || s == null) return s;
+  const str = String(s); if (!/[A-Za-zÀ-ɏ]/.test(str)) return str;
+  const m = /^(\s*)([\s\S]*?)(\s*)$/.exec(str), core = m[2];
+  let r = TRX.s.get(core);
+  if (r == null) for (const [re, rep] of TRX.p) { if (re.test(core)) { r = core.replace(re, typeof rep === 'function' ? rep : rep); break; } }
+  return r == null ? str : m[1] + r + m[3];
+}
+function setLang(l) { try { localStorage.setItem('dd_lang', l); } catch (e) {} location.reload(); }
+(function initLang() {
+  document.documentElement.lang = LANG;
+  const D = LANG_DATA[LANG]; if (LANG === 'tr' || !D) return;
+  for (const k in D.s) TRX.s.set(k, D.s[k]);
+  for (const [re, rep] of D.p || []) TRX.p.push([re, rep]);
+  const alias = (a, b) => { if (a && b && a !== b && !TRX.s.has(a)) TRX.s.set(a, b); };
+  const put = (obj, map, f) => { for (const k in map) if (obj[k]) f(obj[k], map[k]); };
+  put(UT, D.units, (o, v) => alias(o.n, v)); put(BT, D.blds, (o, v) => alias(o.n, v));
+  put(TECH, D.techs, (o, v) => { alias(o.n, v[0]); alias(o.d, v[1]); });
+  put(CIVS, D.civs, (o, v) => { alias(o.n, v[0]); alias(o.lead, v[1]); alias(o.d, v[2]); alias(o.flag + ' ' + o.n, o.flag + ' ' + v[0]); });
+  put(RES_INFO, D.res, (o, v) => alias(o.n, v));
+  for (const k in D.quick) alias(QUICK[k], D.quick[k]); for (const k in D.camp) alias(CAMP_NAME[k], D.camp[k]);
+  D.colors.forEach((c, i) => alias(COLOR_NAMES[i], c)); D.ages.forEach((c, i) => alias(AGE_NAMES[i], c));
+  put(UT, D.units, (o, v) => { o.n = v; });
+  put(BT, D.blds, (o, v) => { o.n = v; });
+  put(TECH, D.techs, (o, v) => { o.n = v[0]; if (v[1]) o.d = v[1]; });
+  put(CIVS, D.civs, (o, v) => { o.n = v[0]; o.lead = v[1]; o.d = v[2]; });
+  put(RES_INFO, D.res, (o, v) => { o.n = v; });
+  Object.assign(RNAME, D.rname); Object.assign(QUICK, D.quick); Object.assign(CAMP_NAME, D.camp);
+  D.colors.forEach((c, i) => { COLOR_NAMES[i] = c; }); D.ages.forEach((c, i) => { AGE_NAMES[i] = c; });
+  // also make reverse entries so names built from data (e.g. "Kışla tamamlandı") translate whole
+})();
+// ---- translate the page as it changes ----
+const TR_ATTR = ['title', 'placeholder'];
+function trText(n) { const v = n.nodeValue, t = T(v); if (t !== v) n.nodeValue = t; }
+function trEl(el) {
+  if (el.nodeType === 3) { trText(el); return; }
+  if (el.nodeType !== 1 || el.tagName === 'SCRIPT' || el.tagName === 'STYLE') return;
+  for (const a of TR_ATTR) { const v = el.getAttribute(a); if (v) { const t = T(v); if (t !== v) el.setAttribute(a, t); } }
+  const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+  let n; while ((n = w.nextNode())) {
+    if (n.nodeType === 3) trText(n);
+    else for (const a of TR_ATTR) { const v = n.getAttribute(a); if (v) { const t = T(v); if (t !== v) n.setAttribute(a, t); } }
+  }
+}
+if (LANG !== 'tr') {
+  const go = () => {
+    if (LANG_DATA[LANG] && LANG_DATA[LANG].help) { const h = document.getElementById('helpBody'); if (h) h.innerHTML = LANG_DATA[LANG].help; }
+    document.title = T(document.title);
+    trEl(document.body);
+    new MutationObserver((ms) => {
+      for (const m of ms) {
+        if (m.type === 'characterData') trText(m.target);
+        else if (m.type === 'attributes') { const v = m.target.getAttribute(m.attributeName); if (v) { const t = T(v); if (t !== v) m.target.setAttribute(m.attributeName, t); } }
+        else for (const n of m.addedNodes) trEl(n);
+      }
+    }).observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: TR_ATTR });
+  };
+  go();
+}
+function langPicker() {
+  const el = document.getElementById('langPick'); if (!el) return;
+  el.innerHTML = Object.keys(LANGS).map(k => `<button class="tb${k === LANG ? ' on' : ''}" data-l="${k}">${LANGS[k]}</button>`).join('');
+  el.querySelectorAll('button').forEach(b => b.onclick = () => { if (b.dataset.l !== LANG) setLang(b.dataset.l); });
+}
+langPicker();
+
 'use strict';
 // ===================== CLIENT: menus, lockstep, render, input =====================
 const $ = (id) => document.getElementById(id);
@@ -2026,8 +2501,8 @@ $('helpCivs').innerHTML = CIV_KEYS.map(k => `<p><b>${CIVS[k].flag} ${CIVS[k].n}<
 
 // ---------------- single player setup ----------------
 const SP = { civ: store.get('civ', 'bozkir'), opps: [{ civ: 'rnd', diff: 1 }] };
-$('spName').value = store.get('name', 'Komutan');
-$('mpName').value = store.get('name', 'Komutan');
+$('spName').value = store.get('name', T('Komutan'));
+$('mpName').value = store.get('name', T('Komutan'));
 function civSelect(v) { return `<select data-k="civ"><option value="rnd">🎲 Rastgele</option>${CIV_KEYS.map(k => `<option value="${k}" ${k === v ? 'selected' : ''}>${CIVS[k].flag} ${CIVS[k].n}</option>`).join('')}</select>`; }
 function diffSelect(v) { return `<select data-k="diff">${['Kolay', 'Normal', 'Zor'].map((n, i) => `<option value="${i}" ${i === v ? 'selected' : ''}>${n}</option>`).join('')}</select>`; }
 function spRender() {
@@ -2046,7 +2521,7 @@ function spRender() {
 }
 $('spAdd').onclick = () => { if (SP.opps.length < 3) { SP.opps.push({ civ: 'rnd', diff: 1 }); spRender(); } };
 $('spStart').onclick = () => {
-  const name = ($('spName').value || 'Komutan').slice(0, 14); store.set('name', name);
+  const name = ($('spName').value || T('Komutan')).slice(0, 14); store.set('name', name);
   const teams = $('spTeams').checked && SP.opps.length >= 2;
   const players = [{ civ: SP.civ, name, team: teams ? 1 : 0 }];
   SP.opps.forEach((o, i) => players.push({ civ: o.civ === 'rnd' ? rndCiv() : o.civ, ai: true, diff: o.diff, team: teams ? (i === 0 ? 1 : 2) : 0, }));
@@ -2088,7 +2563,7 @@ function renderGameList() {
     b.onclick = () => joinRoom(String(a.code), false); $('mpList').appendChild(b);
   }
 }
-function myName() { const n = ($('mpName').value || 'Komutan').slice(0, 14); store.set('name', n); return n; }
+function myName() { const n = ($('mpName').value || T('Komutan')).slice(0, 14); store.set('name', n); return n; }
 $('mpHost').onclick = () => { const A = 'ABCDEFGHJKLMNPRSTUVYZ'; let c = ''; for (let i = 0; i < 4; i++) c += A[(Math.random() * A.length) | 0]; joinRoom(c, true); };
 $('mpJoin').onclick = () => { const c = $('mpCode').value.trim().toUpperCase(); if (/^[A-Z0-9]{3,6}$/.test(c)) joinRoom(c, false); };
 async function ensureMe() {
@@ -3338,7 +3813,7 @@ function render(now) {
       if (t > 1.8 || f.o !== G.me) continue; keep.push(f);
       const [x, y] = w2v(f.x, f.y);
       c.globalAlpha = t < 1.2 ? 1 : 1 - (t - 1.2) / 0.6; c.font = (f.big ? 'bold 17px' : 'bold 12px') + ' Inter,sans-serif'; c.textAlign = 'center'; c.textBaseline = 'alphabetic';
-      c.lineWidth = 3; c.strokeStyle = '#000a'; c.strokeText(f.s, x, y - t * 22); c.fillStyle = f.big ? '#ffd84a' : '#fff3b0'; c.fillText(f.s, x, y - t * 22); c.globalAlpha = 1;
+      c.lineWidth = 3; c.strokeStyle = '#000a'; const ls = T(f.s); c.strokeText(ls, x, y - t * 22); c.fillStyle = f.big ? '#ffd84a' : '#fff3b0'; c.fillText(ls, x, y - t * 22); c.globalAlpha = 1;
     } else if (f.k === 'boom' && ART.ok) {
       if (t > 0.9) continue; keep.push(f); const [x, y] = w2v(f.x, f.y), A = ART.M.common.boom;
       for (let i = 0; i < Math.min(3, f.sz); i++) aFrame(c, ART.img.common, A, Math.floor(t / 0.9 * A.n), x + (i - 1) * f.sz * 9, y - 10 - (i % 2) * 12, false, 0.45 + f.sz * 0.12);
@@ -3377,7 +3852,7 @@ function render(now) {
     c.restore();
     const cost = BT[G.placing].cost, k = Object.keys(cost)[0], [lx, ly0] = w2v(G.ghost[0] * TILE + 16, G.ghost[1] * TILE + 16), ly = ly0 - 26;
     c.font = 'bold 13px Inter,sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000a';
-    const txt = n + ' parça · ' + n * cost[k] + ' ' + RES_INFO[k].i; c.fillRect(lx - 50, ly - 10, 100, 18); c.fillStyle = '#fff'; c.fillText(txt, lx, ly);
+    const txt = T(n + ' parça · ' + n * cost[k] + ' ' + RES_INFO[k].i); c.fillRect(lx - 50, ly - 10, 100, 18); c.fillStyle = '#fff'; c.fillText(txt, lx, ly);
   } else if (G.placing && G.ghost) {
     const [tx, ty] = G.ghost, sz = BT[G.placing].sz, ok = canPlace(s, G.me, G.placing, tx, ty) && isExpTile(tx, ty, sz);
     c.save(); flatT(c);
@@ -3963,7 +4438,7 @@ $('tutSkip').onclick = () => { sfx('click'); tutNext(); };
 document.querySelector('#tut .th').onclick = () => { $('tut').classList.toggle('min'); };
 $('tutClose').onclick = () => { G.tut = null; ['sbTC', 'sbArmy'].forEach(id => $(id).classList.remove('pulse')); tutShow(); };
 $('btnTut').onclick = () => {
-  const name = ($('spName').value || 'Komutan').slice(0, 14);
+  const name = ($('spName').value || T('Komutan')).slice(0, 14);
   const other = CIV_KEYS.filter(k => k !== SP.civ)[(Math.random() * 3) | 0];
   startGame({ players: [{ civ: SP.civ, name }, { civ: other, ai: true, diff: 0, name: CIVS[other].lead }], seed: (Math.random() * 2e9) | 0, me: 0, mode: 'sp', tut: true });
 };
@@ -4181,7 +4656,7 @@ async function deleteSave(k, info) {
   if (SAVE.db) await enqueue(async () => { const col = saveCol(); for (let i = 0; i < Math.max(1, info.n || 1); i++) await col.doc('s_' + k + '_' + i).delete(); await col.doc('s_' + k).delete(); }).catch(() => {});
 }
 function saveDesc(m) {
-  const d = new Date(m.t), when = d.toLocaleDateString('tr-TR') + ' ' + d.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+  const d = new Date(m.t), when = d.toLocaleDateString(LANG + '-' + { tr: 'TR', en: 'GB', nl: 'NL' }[LANG]) + ' ' + d.toLocaleTimeString(LANG + '-' + { tr: 'TR', en: 'GB', nl: 'NL' }[LANG], { hour: '2-digit', minute: '2-digit' });
   const min = Math.floor(m.tick / TPS / 60);
   return `${CIVS[m.civ] ? CIVS[m.civ].flag + ' ' + CIVS[m.civ].n : ''} · ${AGE_NAMES[m.age] || ''} · ${min} dk · ${m.n} oyuncu · ${({ ova: 'Ova', nehir: 'Nehir', yayla: 'Yayla' })[m.map] || ''}<br>${when}`;
 }
@@ -4230,6 +4705,7 @@ async function saveSlotsOpen() {
 }
 $('omSave').onclick = () => { $('ovMenu').classList.remove('on'); saveSlotsOpen(); };
 $('saveBack').onclick = () => { $('ovSave').classList.remove('on'); if (G && G.mode === 'sp') { G.paused = false; G.last = performance.now(); } };
+
 
 </script>
 </body>

@@ -20,8 +20,8 @@ $('helpCivs').innerHTML = CIV_KEYS.map(k => `<p><b>${CIVS[k].flag} ${CIVS[k].n}<
 
 // ---------------- single player setup ----------------
 const SP = { civ: store.get('civ', 'bozkir'), opps: [{ civ: 'rnd', diff: 1 }] };
-$('spName').value = store.get('name', 'Komutan');
-$('mpName').value = store.get('name', 'Komutan');
+$('spName').value = store.get('name', T('Komutan'));
+$('mpName').value = store.get('name', T('Komutan'));
 function civSelect(v) { return `<select data-k="civ"><option value="rnd">🎲 Rastgele</option>${CIV_KEYS.map(k => `<option value="${k}" ${k === v ? 'selected' : ''}>${CIVS[k].flag} ${CIVS[k].n}</option>`).join('')}</select>`; }
 function diffSelect(v) { return `<select data-k="diff">${['Kolay', 'Normal', 'Zor'].map((n, i) => `<option value="${i}" ${i === v ? 'selected' : ''}>${n}</option>`).join('')}</select>`; }
 function spRender() {
@@ -40,7 +40,7 @@ function spRender() {
 }
 $('spAdd').onclick = () => { if (SP.opps.length < 3) { SP.opps.push({ civ: 'rnd', diff: 1 }); spRender(); } };
 $('spStart').onclick = () => {
-  const name = ($('spName').value || 'Komutan').slice(0, 14); store.set('name', name);
+  const name = ($('spName').value || T('Komutan')).slice(0, 14); store.set('name', name);
   const teams = $('spTeams').checked && SP.opps.length >= 2;
   const players = [{ civ: SP.civ, name, team: teams ? 1 : 0 }];
   SP.opps.forEach((o, i) => players.push({ civ: o.civ === 'rnd' ? rndCiv() : o.civ, ai: true, diff: o.diff, team: teams ? (i === 0 ? 1 : 2) : 0, }));
@@ -82,7 +82,7 @@ function renderGameList() {
     b.onclick = () => joinRoom(String(a.code), false); $('mpList').appendChild(b);
   }
 }
-function myName() { const n = ($('mpName').value || 'Komutan').slice(0, 14); store.set('name', n); return n; }
+function myName() { const n = ($('mpName').value || T('Komutan')).slice(0, 14); store.set('name', n); return n; }
 $('mpHost').onclick = () => { const A = 'ABCDEFGHJKLMNPRSTUVYZ'; let c = ''; for (let i = 0; i < 4; i++) c += A[(Math.random() * A.length) | 0]; joinRoom(c, true); };
 $('mpJoin').onclick = () => { const c = $('mpCode').value.trim().toUpperCase(); if (/^[A-Z0-9]{3,6}$/.test(c)) joinRoom(c, false); };
 async function ensureMe() {
@@ -1332,7 +1332,7 @@ function render(now) {
       if (t > 1.8 || f.o !== G.me) continue; keep.push(f);
       const [x, y] = w2v(f.x, f.y);
       c.globalAlpha = t < 1.2 ? 1 : 1 - (t - 1.2) / 0.6; c.font = (f.big ? 'bold 17px' : 'bold 12px') + ' Inter,sans-serif'; c.textAlign = 'center'; c.textBaseline = 'alphabetic';
-      c.lineWidth = 3; c.strokeStyle = '#000a'; c.strokeText(f.s, x, y - t * 22); c.fillStyle = f.big ? '#ffd84a' : '#fff3b0'; c.fillText(f.s, x, y - t * 22); c.globalAlpha = 1;
+      c.lineWidth = 3; c.strokeStyle = '#000a'; const ls = T(f.s); c.strokeText(ls, x, y - t * 22); c.fillStyle = f.big ? '#ffd84a' : '#fff3b0'; c.fillText(ls, x, y - t * 22); c.globalAlpha = 1;
     } else if (f.k === 'boom' && ART.ok) {
       if (t > 0.9) continue; keep.push(f); const [x, y] = w2v(f.x, f.y), A = ART.M.common.boom;
       for (let i = 0; i < Math.min(3, f.sz); i++) aFrame(c, ART.img.common, A, Math.floor(t / 0.9 * A.n), x + (i - 1) * f.sz * 9, y - 10 - (i % 2) * 12, false, 0.45 + f.sz * 0.12);
@@ -1371,7 +1371,7 @@ function render(now) {
     c.restore();
     const cost = BT[G.placing].cost, k = Object.keys(cost)[0], [lx, ly0] = w2v(G.ghost[0] * TILE + 16, G.ghost[1] * TILE + 16), ly = ly0 - 26;
     c.font = 'bold 13px Inter,sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000a';
-    const txt = n + ' parça · ' + n * cost[k] + ' ' + RES_INFO[k].i; c.fillRect(lx - 50, ly - 10, 100, 18); c.fillStyle = '#fff'; c.fillText(txt, lx, ly);
+    const txt = T(n + ' parça · ' + n * cost[k] + ' ' + RES_INFO[k].i); c.fillRect(lx - 50, ly - 10, 100, 18); c.fillStyle = '#fff'; c.fillText(txt, lx, ly);
   } else if (G.placing && G.ghost) {
     const [tx, ty] = G.ghost, sz = BT[G.placing].sz, ok = canPlace(s, G.me, G.placing, tx, ty) && isExpTile(tx, ty, sz);
     c.save(); flatT(c);
@@ -1957,7 +1957,7 @@ $('tutSkip').onclick = () => { sfx('click'); tutNext(); };
 document.querySelector('#tut .th').onclick = () => { $('tut').classList.toggle('min'); };
 $('tutClose').onclick = () => { G.tut = null; ['sbTC', 'sbArmy'].forEach(id => $(id).classList.remove('pulse')); tutShow(); };
 $('btnTut').onclick = () => {
-  const name = ($('spName').value || 'Komutan').slice(0, 14);
+  const name = ($('spName').value || T('Komutan')).slice(0, 14);
   const other = CIV_KEYS.filter(k => k !== SP.civ)[(Math.random() * 3) | 0];
   startGame({ players: [{ civ: SP.civ, name }, { civ: other, ai: true, diff: 0, name: CIVS[other].lead }], seed: (Math.random() * 2e9) | 0, me: 0, mode: 'sp', tut: true });
 };
@@ -2175,7 +2175,7 @@ async function deleteSave(k, info) {
   if (SAVE.db) await enqueue(async () => { const col = saveCol(); for (let i = 0; i < Math.max(1, info.n || 1); i++) await col.doc('s_' + k + '_' + i).delete(); await col.doc('s_' + k).delete(); }).catch(() => {});
 }
 function saveDesc(m) {
-  const d = new Date(m.t), when = d.toLocaleDateString('tr-TR') + ' ' + d.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+  const d = new Date(m.t), when = d.toLocaleDateString(LANG + '-' + { tr: 'TR', en: 'GB', nl: 'NL' }[LANG]) + ' ' + d.toLocaleTimeString(LANG + '-' + { tr: 'TR', en: 'GB', nl: 'NL' }[LANG], { hour: '2-digit', minute: '2-digit' });
   const min = Math.floor(m.tick / TPS / 60);
   return `${CIVS[m.civ] ? CIVS[m.civ].flag + ' ' + CIVS[m.civ].n : ''} · ${AGE_NAMES[m.age] || ''} · ${min} dk · ${m.n} oyuncu · ${({ ova: 'Ova', nehir: 'Nehir', yayla: 'Yayla' })[m.map] || ''}<br>${when}`;
 }
