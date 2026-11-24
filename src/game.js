@@ -2,6 +2,11 @@
 // ===================== CLIENT: menus, lockstep, render, input =====================
 const $ = (id) => document.getElementById(id);
 const TURN_MS = 100;
+const ZMIN = 0.5, ZMAX = 3, ZSTEPS = [1, 1.3, 1.6, 2, 2.5];
+function zoomPref() { const z = +store.get('zoom', IS_TOUCH ? 1.3 : 1.4); return z >= ZMIN && z <= ZMAX ? z : 1.5; }
+let zoomSaveT = 0;
+function setZoom(z) { G.z = Math.max(ZMIN, Math.min(ZMAX, z)); clearTimeout(zoomSaveT); zoomSaveT = setTimeout(() => store.set('zoom', G.z.toFixed(2)), 400); }
+function zoomLabel() { const el = $('omZoom'); if (el) el.textContent = 'Yakınlık: %' + Math.round(G.z * 100); }
 const store = { get(k, d) { try { const v = localStorage.getItem('dd_' + k); return v == null ? d : v; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem('dd_' + k, v); } catch (e) {} } };
 const IS_TOUCH = matchMedia('(pointer:coarse)').matches;
 let G = null;
@@ -302,7 +307,7 @@ function startGame(o) {
     pending: [], acc: 0, speed: 1, paused: false, last: performance.now(),
     lost: {}, reports: {}, dropAt: {}, hashes: new Map(), stallT: 0,
     sel: [], groups: {}, placing: null, ghost: null, rally: false, boxMode: false, box: null, bpage: 'eco',
-    fx: [], marks: [], decals: [], pings: [], chatLog: [], unread: 0, pinging: false, z: IS_TOUCH ? 0.85 : 1, cam: { x: 0, y: 0 }, keys: {}, mouse: { x: 0, y: 0, in: false },
+    fx: [], marks: [], decals: [], pings: [], chatLog: [], unread: 0, pinging: false, z: zoomPref(), cam: { x: 0, y: 0 }, keys: {}, mouse: { x: 0, y: 0, in: false },
     vis: new Uint8Array(sim.W * sim.H), exp: new Uint8Array(sim.W * sim.H), endShown: false, revealAll: false,
   };
   buildGround(); fogCanvas(); mmInit();
@@ -1803,7 +1808,7 @@ cv.addEventListener('pointermove', (e) => {
   else if (gest.m === 'pinch' && ptrs.size >= 2) {
     const [a, b] = [...ptrs.values()];
     const d = Math.hypot(a.x - b.x, a.y - b.y) || 1, mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
-    G.z = Math.max(0.4, Math.min(1.8, gest.z0 * d / gest.d0));
+    setZoom(gest.z0 * d / gest.d0);
     G.cam.x = gest.w[0] - mx / G.z; G.cam.y = gest.w[1] - my / G.z;
   }
 });
@@ -1838,7 +1843,7 @@ cv.addEventListener('pointerleave', (e) => { if (G && e.pointerType === 'mouse')
 cv.addEventListener('wheel', (e) => {
   if (!G) return; e.preventDefault();
   const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top, vx = G.cam.x + x / G.z, vy = G.cam.y + y / G.z;
-  G.z = Math.max(0.4, Math.min(1.8, G.z * Math.exp(-e.deltaY * 0.0015)));
+  setZoom(G.z * Math.exp(-e.deltaY * 0.0015));
   G.cam.x = vx - x / G.z; G.cam.y = vy - y / G.z;
 }, { passive: false });
 function tapAction(wx, wy, dbl) {
@@ -1901,7 +1906,7 @@ $('sbBox').onclick = () => { G.boxMode = !G.boxMode; };
 $('plOk').onclick = () => tryPlace(false, true);
 $('plNo').onclick = () => { G.placing = null; G.wallStart = null; hudSig = ''; };
 // menu
-$('btnMenu').onclick = () => { $('ovMenu').classList.add('on'); if (G.mode === 'sp') G.paused = true; $('omResign').style.display = G.sim.players[G.me].alive ? '' : 'none'; $('omSave').style.display = G.mode === 'sp' ? '' : 'none'; };
+$('btnMenu').onclick = () => { $('ovMenu').classList.add('on'); zoomLabel(); if (G.mode === 'sp') G.paused = true; $('omResign').style.display = G.sim.players[G.me].alive ? '' : 'none'; $('omSave').style.display = G.mode === 'sp' ? '' : 'none'; };
 $('omResume').onclick = () => { $('ovMenu').classList.remove('on'); G.paused = false; G.last = performance.now(); };
 $('omSpeed').onclick = () => { const sp = [1, 1.5, 2, 3]; G.speed = sp[(sp.indexOf(G.speed) + 1) % sp.length]; $('omSpeed').textContent = 'Hız: ' + G.speed + 'x'; };
 $('omResign').onclick = () => { issue(['gg']); $('ovMenu').classList.remove('on'); G.paused = false; G.last = performance.now(); };
@@ -2034,6 +2039,11 @@ document.querySelectorAll('.gb').forEach(b => {
 $('spMap').value = store.get('map', 'ova');
 function viewLabel() { $('omView').textContent = 'Görünüm: ' + (ISO ? 'Çapraz (izometrik)' : 'Üstten'); }
 $('omView').onclick = () => { setView(!ISO); viewLabel(); };
+$('omZoom').onclick = () => {
+  const i = ZSTEPS.findIndex(z => z > G.z + 0.01), z = i < 0 ? ZSTEPS[0] : ZSTEPS[i];
+  const cx = G.cam.x + VW / G.z / 2, cy = G.cam.y + VH / G.z / 2; setZoom(z);
+  G.cam.x = cx - VW / G.z / 2; G.cam.y = cy - VH / G.z / 2; clampCam(); zoomLabel();
+};
 viewLabel();
 
 // ===================== CHAT, QUICK MESSAGES, PINGS, TRIBUTE =====================

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Dört Diyar — Çağların Savaşı v1.4</title>
+<title>Dört Diyar — Çağların Savaşı v1.5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -207,7 +207,7 @@ input,select{background:#120e09;border:1px solid var(--line);color:var(--txt);bo
     <div class="row langs" id="langPick" style="justify-content:center"></div>
   </div>
   <p class="hint" style="text-align:center;margin-top:26px">Bilgisayarda fare ve klavye, telefonda dokunmatik ile oynanır. Telefonda yatay tutman önerilir.</p>
-  <p class="ver">Sürüm 1.4</p>
+  <p class="ver">Sürüm 1.5</p>
 </div></div>
 
 <!-- SINGLE PLAYER SETUP -->
@@ -335,6 +335,7 @@ input,select{background:#120e09;border:1px solid var(--line);color:var(--txt);bo
     <button class="big" id="omSpeed">Hız: 1x</button>
     <button class="big" id="omGfx">Grafik: Otomatik</button>
     <button class="big" id="omView">Görünüm</button>
+    <button class="big" id="omZoom">Yakınlık</button>
     <div class="row" style="justify-content:center"><button class="tb btnSnd"></button><button class="tb btnMus"></button></div>
     <button class="big" id="omSave">💾 Oyunu kaydet</button>
     <button class="big" id="omResign">🏳️ Teslim ol</button>
@@ -2039,12 +2040,12 @@ self.LANG_EN = {
   colors: ['Blue', 'Red', 'Purple', 'Yellow'],
   ages: ['', 'Village Age', 'Castle Age', 'Imperial Age'],
   s: {
-    'Dört Diyar — Çağların Savaşı v1.4': 'Four Realms — War of the Ages v1.4',
+    'Dört Diyar — Çağların Savaşı v1.5': 'Four Realms — War of the Ages v1.5',
     'DÖRT DİYAR': 'FOUR REALMS', 'ÇAĞLARIN SAVAŞI': 'WAR OF THE AGES',
     '⚔️ Tek Oyunculu': '⚔️ Single Player', '🌐 Çok Oyunculu (4 kişiye kadar)': '🌐 Multiplayer (up to 4 players)',
     '🎓 Eğitim (ilk oyunun için)': '🎓 Tutorial (for your first game)', '📂 Kayıtlı oyunlar': '📂 Saved games', '📜 Nasıl Oynanır': '📜 How to Play',
     'Bilgisayarda fare ve klavye, telefonda dokunmatik ile oynanır. Telefonda yatay tutman önerilir.': 'Play with mouse and keyboard on a computer, or touch on a phone. Landscape is recommended on phones.',
-    'Sürüm 1.4': 'Version 1.4', '‹ Ana menü': '‹ Main menu', 'Medeniyetini seç': 'Choose your civilization', 'Rakipler': 'Opponents', 'İsmin': 'Your name',
+    'Sürüm 1.5': 'Version 1.5', '‹ Ana menü': '‹ Main menu', 'Medeniyetini seç': 'Choose your civilization', 'Rakipler': 'Opponents', 'İsmin': 'Your name',
     'Harita': 'Map', '🌾 Ova (göller)': '🌾 Plains (lakes)', '🌊 Nehir (geçitli)': '🌊 River (with fords)', '⛰️ Yayla (tepeler)': '⛰️ Highlands (hills)',
     'Boyut': 'Size', 'Küçük': 'Small', 'Orta': 'Medium', 'Büyük': 'Large', 'Kaynak': 'Resources', 'Normal': 'Normal', 'Bol': 'Rich', 'Nüfus': 'Population',
     'Canavar': 'Monsters', 'Yok': 'None', 'Az': 'Few', 'Çok': 'Many', 'Düşük': 'Low', 'Yüksek': 'High',
@@ -2123,7 +2124,7 @@ self.LANG_EN = {
     '✓ Kaydedildi (bu cihaz + hesabın)': '✓ Saved (this device + your account)', '✓ Bu cihaza kaydedildi': '✓ Saved on this device', 'Kaydedilemedi.': 'Could not save.',
     'Saldırı altındasınız!': 'You are under attack!', 'Yaban domuzu saldırıyor!': 'A wild boar is attacking!', '🛡️ Yardıma geliyorum!': '🛡️ I’m coming to help!',
     '⚔️ Ordum hazırlanıyor, saldırıyoruz!': '⚔️ My army is getting ready, we attack!', '😕 Şu an ayıracak kaynağım yok.': '😕 I have no resources to spare right now.',
-    '💰 Hazine!': '💰 Treasure!', 'Birime dokunarak seç': 'Tap a unit to select it', 'Seçmek için tıkla veya sürükle': 'Click or drag to select', 'Boş': 'Empty', 'Ova': 'Plains', 'Nehir': 'River', 'Yayla': 'Highlands', 'Hız: 1x': 'Speed: 1x',
+    '💰 Hazine!': '💰 Treasure!', 'Birime dokunarak seç': 'Tap a unit to select it', 'Seçmek için tıkla veya sürükle': 'Click or drag to select', 'Boş': 'Empty', 'Ova': 'Plains', 'Nehir': 'River', 'Yayla': 'Highlands', 'Yakınlık': 'Zoom', 'Hız: 1x': 'Speed: 1x',
   },
   p: [
     [/^Lider: (.+)$/, 'Leader: $1'],
@@ -2143,6 +2144,7 @@ self.LANG_EN = {
     [/^Grup (\d) kaydedildi$/, 'Group $1 saved'],
     [/^Grup (\d) boş — kaydetmek için basılı tut$/, 'Group $1 is empty — press and hold to save'],
     [/^Grup (\d) boş — Ctrl\+(\d) veya basılı tut$/, 'Group $1 is empty — Ctrl+$2 or press and hold'],
+    [/^Yakınlık: %(\d+)$/, 'Zoom: $1%'],
     [/^Hız: (.+)$/, 'Speed: $1'],
     [/^(\d+) (.+) seçildi$/, (m, n, u) => `${n} × ${T(u)} selected`],
     [/^Yeterli (.+) yok$/, (m, r) => `Not enough ${T(r).toLowerCase()}`],
@@ -2235,12 +2237,12 @@ self.LANG_NL = {
   colors: ['Blauw', 'Rood', 'Paars', 'Geel'],
   ages: ['', 'Dorpstijdperk', 'Kasteeltijdperk', 'Keizerlijk tijdperk'],
   s: {
-    'Dört Diyar — Çağların Savaşı v1.4': 'Vier Rijken — Oorlog der Tijdperken v1.4',
+    'Dört Diyar — Çağların Savaşı v1.5': 'Vier Rijken — Oorlog der Tijdperken v1.5',
     'DÖRT DİYAR': 'VIER RIJKEN', 'ÇAĞLARIN SAVAŞI': 'OORLOG DER TIJDPERKEN',
     '⚔️ Tek Oyunculu': '⚔️ Eén speler', '🌐 Çok Oyunculu (4 kişiye kadar)': '🌐 Multiplayer (tot 4 spelers)',
     '🎓 Eğitim (ilk oyunun için)': '🎓 Handleiding (voor je eerste spel)', '📂 Kayıtlı oyunlar': '📂 Opgeslagen spellen', '📜 Nasıl Oynanır': '📜 Hoe speel je',
     'Bilgisayarda fare ve klavye, telefonda dokunmatik ile oynanır. Telefonda yatay tutman önerilir.': 'Speel met muis en toetsenbord op de computer, of met aanraken op de telefoon. Houd je telefoon bij voorkeur liggend.',
-    'Sürüm 1.4': 'Versie 1.4', '‹ Ana menü': '‹ Hoofdmenu', 'Medeniyetini seç': 'Kies je beschaving', 'Rakipler': 'Tegenstanders', 'İsmin': 'Je naam',
+    'Sürüm 1.5': 'Versie 1.5', '‹ Ana menü': '‹ Hoofdmenu', 'Medeniyetini seç': 'Kies je beschaving', 'Rakipler': 'Tegenstanders', 'İsmin': 'Je naam',
     'Harita': 'Kaart', '🌾 Ova (göller)': '🌾 Vlakte (meren)', '🌊 Nehir (geçitli)': '🌊 Rivier (met doorwaadplaatsen)', '⛰️ Yayla (tepeler)': '⛰️ Hoogland (heuvels)',
     'Boyut': 'Grootte', 'Küçük': 'Klein', 'Orta': 'Middel', 'Büyük': 'Groot', 'Kaynak': 'Grondstoffen', 'Normal': 'Normaal', 'Bol': 'Veel', 'Nüfus': 'Bevolking',
     'Canavar': 'Monsters', 'Yok': 'Geen', 'Az': 'Weinig', 'Çok': 'Veel', 'Düşük': 'Laag', 'Yüksek': 'Hoog',
@@ -2320,7 +2322,7 @@ self.LANG_NL = {
     'Saldırı altındasınız!': 'Je wordt aangevallen!', 'Yaban domuzu saldırıyor!': 'Een everzwijn valt aan!', '🛡️ Yardıma geliyorum!': '🛡️ Ik kom helpen!',
     '⚔️ Ordum hazırlanıyor, saldırıyoruz!': '⚔️ Mijn leger maakt zich klaar, we vallen aan!', '😕 Şu an ayıracak kaynağım yok.': '😕 Ik heb nu geen grondstoffen over.',
     '💰 Hazine!': '💰 Schat!', 'Birime dokunarak seç': 'Tik op een eenheid om te kiezen', 'Seçmek için tıkla veya sürükle': 'Klik of sleep om te selecteren', 'Boş': 'Leeg',
-    'Ova': 'Vlakte', 'Nehir': 'Rivier', 'Yayla': 'Hoogland', 'Hız: 1x': 'Snelheid: 1x',
+    'Ova': 'Vlakte', 'Nehir': 'Rivier', 'Yayla': 'Hoogland', 'Yakınlık': 'Zoom', 'Hız: 1x': 'Snelheid: 1x',
   },
   p: [
     [/^Lider: (.+)$/, 'Leider: $1'],
@@ -2340,6 +2342,7 @@ self.LANG_NL = {
     [/^Grup (\d) kaydedildi$/, 'Groep $1 opgeslagen'],
     [/^Grup (\d) boş — kaydetmek için basılı tut$/, 'Groep $1 is leeg — ingedrukt houden om op te slaan'],
     [/^Grup (\d) boş — Ctrl\+(\d) veya basılı tut$/, 'Groep $1 is leeg — Ctrl+$2 of ingedrukt houden'],
+    [/^Yakınlık: %(\d+)$/, 'Zoom: $1%'],
     [/^Hız: (.+)$/, 'Snelheid: $1'],
     [/^(\d+) (.+) seçildi$/, (m, n, u) => `${n} × ${T(u)} geselecteerd`],
     [/^Yeterli (.+) yok$/, (m, r) => `Niet genoeg ${T(r).toLowerCase()}`],
@@ -2483,6 +2486,11 @@ langPicker();
 // ===================== CLIENT: menus, lockstep, render, input =====================
 const $ = (id) => document.getElementById(id);
 const TURN_MS = 100;
+const ZMIN = 0.5, ZMAX = 3, ZSTEPS = [1, 1.3, 1.6, 2, 2.5];
+function zoomPref() { const z = +store.get('zoom', IS_TOUCH ? 1.3 : 1.4); return z >= ZMIN && z <= ZMAX ? z : 1.5; }
+let zoomSaveT = 0;
+function setZoom(z) { G.z = Math.max(ZMIN, Math.min(ZMAX, z)); clearTimeout(zoomSaveT); zoomSaveT = setTimeout(() => store.set('zoom', G.z.toFixed(2)), 400); }
+function zoomLabel() { const el = $('omZoom'); if (el) el.textContent = 'Yakınlık: %' + Math.round(G.z * 100); }
 const store = { get(k, d) { try { const v = localStorage.getItem('dd_' + k); return v == null ? d : v; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem('dd_' + k, v); } catch (e) {} } };
 const IS_TOUCH = matchMedia('(pointer:coarse)').matches;
 let G = null;
@@ -2783,7 +2791,7 @@ function startGame(o) {
     pending: [], acc: 0, speed: 1, paused: false, last: performance.now(),
     lost: {}, reports: {}, dropAt: {}, hashes: new Map(), stallT: 0,
     sel: [], groups: {}, placing: null, ghost: null, rally: false, boxMode: false, box: null, bpage: 'eco',
-    fx: [], marks: [], decals: [], pings: [], chatLog: [], unread: 0, pinging: false, z: IS_TOUCH ? 0.85 : 1, cam: { x: 0, y: 0 }, keys: {}, mouse: { x: 0, y: 0, in: false },
+    fx: [], marks: [], decals: [], pings: [], chatLog: [], unread: 0, pinging: false, z: zoomPref(), cam: { x: 0, y: 0 }, keys: {}, mouse: { x: 0, y: 0, in: false },
     vis: new Uint8Array(sim.W * sim.H), exp: new Uint8Array(sim.W * sim.H), endShown: false, revealAll: false,
   };
   buildGround(); fogCanvas(); mmInit();
@@ -4284,7 +4292,7 @@ cv.addEventListener('pointermove', (e) => {
   else if (gest.m === 'pinch' && ptrs.size >= 2) {
     const [a, b] = [...ptrs.values()];
     const d = Math.hypot(a.x - b.x, a.y - b.y) || 1, mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
-    G.z = Math.max(0.4, Math.min(1.8, gest.z0 * d / gest.d0));
+    setZoom(gest.z0 * d / gest.d0);
     G.cam.x = gest.w[0] - mx / G.z; G.cam.y = gest.w[1] - my / G.z;
   }
 });
@@ -4319,7 +4327,7 @@ cv.addEventListener('pointerleave', (e) => { if (G && e.pointerType === 'mouse')
 cv.addEventListener('wheel', (e) => {
   if (!G) return; e.preventDefault();
   const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top, vx = G.cam.x + x / G.z, vy = G.cam.y + y / G.z;
-  G.z = Math.max(0.4, Math.min(1.8, G.z * Math.exp(-e.deltaY * 0.0015)));
+  setZoom(G.z * Math.exp(-e.deltaY * 0.0015));
   G.cam.x = vx - x / G.z; G.cam.y = vy - y / G.z;
 }, { passive: false });
 function tapAction(wx, wy, dbl) {
@@ -4382,7 +4390,7 @@ $('sbBox').onclick = () => { G.boxMode = !G.boxMode; };
 $('plOk').onclick = () => tryPlace(false, true);
 $('plNo').onclick = () => { G.placing = null; G.wallStart = null; hudSig = ''; };
 // menu
-$('btnMenu').onclick = () => { $('ovMenu').classList.add('on'); if (G.mode === 'sp') G.paused = true; $('omResign').style.display = G.sim.players[G.me].alive ? '' : 'none'; $('omSave').style.display = G.mode === 'sp' ? '' : 'none'; };
+$('btnMenu').onclick = () => { $('ovMenu').classList.add('on'); zoomLabel(); if (G.mode === 'sp') G.paused = true; $('omResign').style.display = G.sim.players[G.me].alive ? '' : 'none'; $('omSave').style.display = G.mode === 'sp' ? '' : 'none'; };
 $('omResume').onclick = () => { $('ovMenu').classList.remove('on'); G.paused = false; G.last = performance.now(); };
 $('omSpeed').onclick = () => { const sp = [1, 1.5, 2, 3]; G.speed = sp[(sp.indexOf(G.speed) + 1) % sp.length]; $('omSpeed').textContent = 'Hız: ' + G.speed + 'x'; };
 $('omResign').onclick = () => { issue(['gg']); $('ovMenu').classList.remove('on'); G.paused = false; G.last = performance.now(); };
@@ -4515,6 +4523,11 @@ document.querySelectorAll('.gb').forEach(b => {
 $('spMap').value = store.get('map', 'ova');
 function viewLabel() { $('omView').textContent = 'Görünüm: ' + (ISO ? 'Çapraz (izometrik)' : 'Üstten'); }
 $('omView').onclick = () => { setView(!ISO); viewLabel(); };
+$('omZoom').onclick = () => {
+  const i = ZSTEPS.findIndex(z => z > G.z + 0.01), z = i < 0 ? ZSTEPS[0] : ZSTEPS[i];
+  const cx = G.cam.x + VW / G.z / 2, cy = G.cam.y + VH / G.z / 2; setZoom(z);
+  G.cam.x = cx - VW / G.z / 2; G.cam.y = cy - VH / G.z / 2; clampCam(); zoomLabel();
+};
 viewLabel();
 
 // ===================== CHAT, QUICK MESSAGES, PINGS, TRIBUTE =====================
