@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Dört Diyar — Çağların Savaşı v1.5</title>
+<title>Dört Diyar — Çağların Savaşı v1.6</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -189,6 +189,52 @@ input,select{background:#120e09;border:1px solid var(--line);color:var(--txt);bo
   .touch #place{bottom:116px}
   .touch #tip{bottom:114px}
 }
+
+/* ---- compact bottom panel (v1.6): about half the old height, one scrolling row of commands ---- */
+#bottom{height:82px;padding:5px 8px;padding-bottom:calc(5px + env(safe-area-inset-bottom));gap:8px}
+#info{display:flex;flex-direction:column;justify-content:center;gap:2px}
+#info .inf-h{gap:7px}
+#info .inf-ic{width:36px;height:36px;font-size:22px;flex:none}
+#info .inf-n{font-size:13px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#info .inf-s{font-size:11px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#info .stats{margin-top:1px;font-size:11px;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;gap:8px}
+#info .hint{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#info .q,#info .multi{margin-top:2px;flex-wrap:nowrap;overflow:hidden}
+#info .qi{width:26px;height:26px;font-size:14px;flex:none}
+#info .mu{padding:1px 5px;font-size:11px;flex:none}
+#info .hpb{margin-top:2px}
+#cmds,.touch #cmds{grid-auto-flow:column;grid-template-columns:none;grid-template-rows:68px;grid-auto-columns:62px;grid-auto-rows:68px;overflow-x:auto;overflow-y:hidden;touch-action:pan-x;align-content:center;scrollbar-width:thin}
+#side,#grp,#quick{bottom:90px}
+#place{bottom:94px}
+#tip{bottom:90px}
+@media (max-width:760px){
+  #bottom,.touch #bottom{height:70px;padding:5px 6px}
+  #info{flex-basis:34%}
+  #info .stats,#info .hint{display:none}
+  #info .inf-ic{width:30px;height:30px;font-size:18px}
+  #info .qi{width:24px;height:24px;font-size:13px}
+  #info:has(.q) .inf-h .inf-s,#info:has(.multi) .inf-n{font-size:12px}
+  #info:has(.q) .inf-h .inf-s{display:none}
+  #info{gap:3px}
+  #cmds,.touch #cmds{grid-template-rows:58px;grid-auto-rows:58px;grid-auto-columns:56px;gap:5px}
+  #side,#grp,.touch #side,.touch #grp,.touch #quick{bottom:76px}
+  #place,.touch #place{bottom:80px}
+  #tip,.touch #tip{bottom:76px}
+}
+@media (max-height:480px) and (orientation:landscape){
+  #bottom,.touch #bottom{height:56px;padding:4px 6px;padding-bottom:calc(4px + env(safe-area-inset-bottom))}
+  #info{flex-basis:34%;flex-direction:row;align-items:center;justify-content:flex-start;gap:8px}
+  #info .inf-h{flex:none;max-width:100%}
+  #info .q,#info .multi{margin-top:0;min-width:0}
+  #info .inf-ic{width:30px;height:30px;font-size:18px}
+  #info .stats,#info .hint{display:none}
+  #info .hpb{width:90px}
+  #cmds,.touch #cmds{grid-template-rows:46px;grid-auto-rows:46px;grid-auto-columns:54px;gap:5px}
+  #side,#grp,.touch #side,.touch #grp{bottom:62px}
+  .touch #quick{bottom:116px}
+  #place,.touch #place{bottom:64px}
+  #tip,.touch #tip{bottom:62px}
+}
 </style>
 </head>
 <body>
@@ -207,7 +253,7 @@ input,select{background:#120e09;border:1px solid var(--line);color:var(--txt);bo
     <div class="row langs" id="langPick" style="justify-content:center"></div>
   </div>
   <p class="hint" style="text-align:center;margin-top:26px">Bilgisayarda fare ve klavye, telefonda dokunmatik ile oynanır. Telefonda yatay tutman önerilir.</p>
-  <p class="ver">Sürüm 1.5</p>
+  <p class="ver">Sürüm 1.6</p>
 </div></div>
 
 <!-- SINGLE PLAYER SETUP -->

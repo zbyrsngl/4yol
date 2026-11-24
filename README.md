@@ -1,4 +1,4 @@
-# Dört Diyar — Çağların Savaşı (v1.5)
+# Dört Diyar — Çağların Savaşı (v1.6)
 
 Tarayıcıda, bilgisayarda ve telefonda oynanan, Age of Empires 2 tarzı bir gerçek zamanlı strateji oyunu.
 Dört medeniyet (Bozkır Hanlığı, Kızıl Liman Cumhuriyeti, Taş Dağ Krallığı, Yeşil Orman Birliği), üç çağ,
@@ -9,6 +9,9 @@ yapay zekaya karşı tek oyunculu mod ve 4 kişiye kadar çok oyunculu mod.
 - **Çok oyunculu:** “Çok Oyunculu → Yeni oyun kur” de, çıkan 4 harfli kodu arkadaşlarına gönder.
   Onlar aynı adresi açıp kodu yazarak katılır. Oyuncular birbirine doğrudan (WebRTC/PeerJS) bağlanır.
 - Kayıtlar tarayıcıda saklanır (menü → Kaydet, ana menü → Kayıtlı oyunlar).
+
+## 1.6 sürümünde yeni
+- Alttaki bilgi paneli yarı yarıya küçültüldü; komut düğmeleri tek sıra halinde yana kayıyor (bilgisayarda fare tekerleğiyle de kaydırılır).
 
 ## 1.5 sürümünde yeni
 - Her şey daha büyük: kamera artık daha yakından başlıyor (telefonda %130, bilgisayarda %140) ve %300'e kadar yakınlaştırılabiliyor. Menüdeki "Yakınlık" düğmesiyle de değiştirilebilir; seçtiğin yakınlık hatırlanır.

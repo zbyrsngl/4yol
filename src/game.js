@@ -2039,6 +2039,8 @@ document.querySelectorAll('.gb').forEach(b => {
 $('spMap').value = store.get('map', 'ova');
 function viewLabel() { $('omView').textContent = 'Görünüm: ' + (ISO ? 'Çapraz (izometrik)' : 'Üstten'); }
 $('omView').onclick = () => { setView(!ISO); viewLabel(); };
+// one row of command buttons: the mouse wheel scrolls it sideways
+$('cmds').addEventListener('wheel', (e) => { const el = $('cmds'); if (el.scrollWidth > el.clientWidth && Math.abs(e.deltaY) > Math.abs(e.deltaX)) { el.scrollLeft += e.deltaY; e.preventDefault(); } }, { passive: false });
 $('omZoom').onclick = () => {
   const i = ZSTEPS.findIndex(z => z > G.z + 0.01), z = i < 0 ? ZSTEPS[0] : ZSTEPS[i];
   const cx = G.cam.x + VW / G.z / 2, cy = G.cam.y + VH / G.z / 2; setZoom(z);
